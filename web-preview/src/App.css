@@ -1,0 +1,71 @@
+.app {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+  padding-bottom: calc(70px + env(safe-area-inset-bottom));
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #0a0a0f;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 0;
+  padding-bottom: max(8px, env(safe-area-inset-bottom));
+  z-index: 1000;
+  min-height: 70px;
+  max-height: calc(70px + env(safe-area-inset-bottom));
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 480px) {
+  .nav-label {
+    font-size: 10px;
+  }
+  
+  .nav-icon {
+    font-size: 20px;
+  }
+  
+  .bottom-nav {
+    min-height: 60px;
+    padding: 6px 0;
+    padding-bottom: max(6px, env(safe-area-inset-bottom));
+  }
+  
+  .app {
+    padding-bottom: calc(60px + env(safe-area-inset-bottom));
+  }
+}
+
+.nav-button {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  background: transparent;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.nav-button.active {
+  color: #fff;
+}
+
+.nav-icon {
+  font-size: 24px;
+  margin-bottom: 4px;
+}
+
+.nav-label {
+  font-size: 12px;
+  font-weight: 600;
+}

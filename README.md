@@ -1,162 +1,144 @@
-# ARBIT Trading Cards
+# ARBIT Cards - Space-Themed Trading Cards Mobile App
 
-A modern web application for collecting and trading crypto-themed trading cards, integrated with Pear Protocol for real trading functionality.
+A React Native mobile app for collecting and trading space-themed character cards, designed to integrate with Hyperliquid and Pear API backend for crypto trading functionality.
 
-## 🎮 Features
+## 🎴 Features
 
-- **Card Gallery**: Browse and discover trading cards with unique stats and rarities
-- **Collection Management**: View and manage your card collection
-- **Portfolio Tracking**: Monitor your trading performance and portfolio value
-- **Wallet Integration**: Connect your Web3 wallet (MetaMask, Rabby, etc.)
-- **Trading**: Execute real trades via Pear Protocol integration
-- **Educational**: Learn crypto trading concepts through card mechanics
+- **Card Gallery**: Browse all available space-themed trading cards with search and filters
+- **Collection**: View your personal card collection with stats
+- **Trading Stats**: Learn crypto trading concepts through gamified stats (Long, Short, Leverage, Market IQ)
+- **Beautiful UI**: Space-themed design with gradient effects, rarity emojis, and animations
+- **Backend Ready**: API service layer prepared for Hyperliquid/Pear integration
 
-## 🚀 Getting Started
+## 📱 Project Structure
+
+```
+ARBIT-CARDS/
+├── src/                    # React Native app source code
+│   ├── components/         # Reusable UI components
+│   ├── screens/            # App screens
+│   ├── navigation/         # Navigation setup
+│   ├── services/           # API services
+│   ├── types/              # TypeScript types
+│   └── data/               # Mock data
+├── web-preview/            # Web preview version (for development/testing)
+└── scripts/                # Utility scripts
+```
+
+## 🚀 Quick Start
 
 ### Prerequisites
 
-- Node.js 18+ and npm/yarn
-- A Web3 wallet (MetaMask, Rabby, or compatible)
-- Pear Protocol API credentials (for trading functionality)
+- Node.js 18+ installed
+- React Native development environment set up
+- iOS: Xcode and CocoaPods
+- Android: Android Studio and Android SDK
 
 ### Installation
 
-1. Clone the repository:
-```bash
-git clone <your-repo-url>
-cd Arbit-Backend
-```
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-2. Install dependencies:
+2. **For iOS (Mac only):**
+   ```bash
+   cd ios && pod install && cd ..
+   ```
+
+3. **Start Metro bundler:**
+   ```bash
+   npm start
+   ```
+
+4. **Run the app:**
+   ```bash
+   npm run ios      # iOS
+   npm run android  # Android
+   ```
+
+### Web Preview
+
+To preview the app in your browser:
+
 ```bash
+cd web-preview
 npm install
-```
-
-3. Set up environment variables:
-```bash
-cp .env.example .env
-```
-
-Edit `.env` and add your configuration:
-```env
-PEAR_CLIENT_ID=your_client_id
-PEAR_CLIENT_SECRET=your_client_secret
-NEXT_PUBLIC_PEAR_API_URL=https://api.pearprotocol.com
-```
-
-4. Run the development server:
-```bash
 npm run dev
 ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+Then open `http://localhost:3001`
 
-## 📁 Project Structure
+## 🎨 Card Characters
 
-```
-Arbit-Backend/
-├── app/                    # Next.js app directory
-│   ├── api/               # API routes
-│   ├── components/        # React components
-│   ├── portfolio/         # Portfolio page
-│   ├── trading/           # Trading page
-│   └── ...
-├── lib/                    # Utility libraries
-├── types/                 # TypeScript type definitions
-├── public/                 # Static assets
-└── scripts/               # Utility scripts
-```
+The app features 12 unique space-themed characters:
 
-## 🛠️ Tech Stack
+- **Nexus Prime** (Legendary) - Mad Scientist of Dimension X-9
+- **Zephyr Flux** (Epic) - The Anxious Sidekick
+- **Voidweaver** (Legendary) - Master of Dimensional Rifts
+- **Quantum Shift** (Epic) - The Reality Bender
+- **Nexus Helper** (Rare) - The Task Master
+- **Stellar Wing** (Epic) - Champion of the Celestial Aviary
+- **Cosmic Rager** (Rare) - The Party Beast
+- **Dream Stalker** (Uncommon) - The Nightmare Runner
+- **Fuel Bot** (Rare) - The Hungry Automaton
+- **The Nexus** (Legendary) - The Collective Consciousness
+- **Space Sweeper** (Common) - The Cosmic Janitor
+- **Fusion Core** (Epic) - The Experimental Hybrid
 
-- **Framework**: Next.js 14 (App Router)
-- **Language**: TypeScript
-- **Styling**: CSS Modules
-- **Wallet**: Ethers.js
-- **Trading**: Pear Protocol API
-- **Deployment**: Vercel/Netlify ready
+## 📊 Trading Stats Explained
 
-## 📝 Available Scripts
+Each card has four trading-related stats that teach crypto trading concepts:
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
+- **📈 Buy Up (Long Position)**: Ability to profit when prices rise
+- **📉 Sell Down (Short Position)**: Ability to profit when prices fall
+- **⚖️ Risk Power (Leverage)**: Risk management and position sizing ability
+- **🧠 Market Smarts (Market IQ)**: Understanding of market dynamics and trends
 
-## 🔐 Environment Variables
+See `docs/TRADING_STATS_GUIDE.md` for detailed explanations.
 
-Create a `.env` file in the root directory:
+## 🔗 Backend Integration
 
-```env
-# Pear Protocol Configuration
-PEAR_CLIENT_ID=your_client_id
-PEAR_CLIENT_SECRET=your_client_secret
-NEXT_PUBLIC_PEAR_API_URL=https://api.pearprotocol.com
+The app is designed to work with a backend that integrates Hyperliquid and Pear API. See `docs/BACKEND_INTEGRATION.md` for API endpoint specifications.
 
-# Optional: Custom API base URL
-NEXT_PUBLIC_API_BASE_URL=http://localhost:3000
-```
+### Expected API Endpoints
 
-## 🎯 Key Features
+- `GET /api/cards` - Get all cards
+- `GET /api/cards/:id` - Get card by ID
+- `GET /api/users/:walletAddress/cards` - Get user's collection
+- `GET /api/hyperliquid/market/:pair` - Get market data
+- `POST /api/pear/pair-trade` - Execute pair trade
 
-### Card System
-- **Rarities**: Common, Uncommon, Rare, Epic, Legendary
-- **Factions**: Nexus, Void, Flux
-- **Stats**: Buy Up, Sell Down, Risk Power, Market Smarts
-- **Trading Pairs**: Each card represents a crypto trading pair
+## 🖼️ Adding Card Images
 
-### Wallet Integration
-- Connect with MetaMask, Rabby, or any Web3 wallet
-- Secure authentication via EIP-712 signing
-- Wallet address stored locally for session persistence
+Card images should be placed in:
+- **Web Preview**: `web-preview/public/images/cards/`
+- **React Native**: `src/assets/images/cards/`
 
-### Trading
-- Execute trades through Pear Protocol
-- Real-time trade execution
-- Trade history tracking
-- Portfolio performance metrics
+Required files (400x600px, JPG or PNG):
+- `nexus-prime.jpg`, `zephyr-flux.jpg`, `voidweaver.jpg`, etc.
 
-## 🤝 Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to contribute to this project.
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🐛 Troubleshooting
-
-### Wallet Connection Issues
-- Ensure your wallet extension is installed and unlocked
-- Check that you're on the correct network
-- Try refreshing the page after connecting
-
-### Trading Errors
-- Verify your Pear Protocol credentials are correct
-- Check that your wallet has sufficient funds
-- Ensure the builder address is approved
-
-### Build Issues
-- Clear `.next` folder and rebuild: `rm -rf .next && npm run build`
-- Delete `node_modules` and reinstall: `rm -rf node_modules && npm install`
+See `docs/IMAGE_SETUP.md` for detailed instructions.
 
 ## 📚 Documentation
 
-- [Authentication Guide](AUTHENTICATION_GUIDE.md)
-- [Integration Summary](INTEGRATION_SUMMARY.md)
-- [Troubleshooting Guide](TROUBLESHOOTING.md)
+- `docs/TRADING_STATS_GUIDE.md` - Explanation of trading stats
+- `docs/BACKEND_INTEGRATION.md` - Backend API specifications
+- `docs/IMAGE_SETUP.md` - How to add card images
+- `docs/DEVELOPMENT.md` - Development guide
 
-## 🔗 Links
+## 🛠️ Tech Stack
 
-- [Pear Protocol Documentation](https://docs.pearprotocol.com)
-- [Next.js Documentation](https://nextjs.org/docs)
+- **React Native** 0.72.6
+- **TypeScript**
+- **React Navigation** - Navigation system
+- **React Native Linear Gradient** - Gradient effects
+- **Axios** - HTTP client for API calls
 
-## 👥 Authors
+## 📝 License
 
-- Your Name - Initial work
+MIT
 
-## 🙏 Acknowledgments
+## 🤝 Contributing
 
-- Pear Protocol for trading infrastructure
-- Next.js team for the amazing framework
-- The Web3 community for inspiration
+This is a collaborative project. Coordinate with backend developers to ensure API contracts match.
