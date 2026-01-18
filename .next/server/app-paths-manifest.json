@@ -1,8 +1,0 @@
-{
-  "/api/bot-demo/route": "app/api/bot-demo/route.js",
-  "/help/page": "app/help/page.js",
-  "/gallery/page": "app/gallery/page.js",
-  "/trading/page": "app/trading/page.js",
-  "/portfolio/page": "app/portfolio/page.js",
-  "/page": "app/page.js"
-}
