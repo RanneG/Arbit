@@ -57,6 +57,12 @@ export default function CardDetails({ card }: CardDetailsProps) {
 
     // Smooth return to center animation
     const returnToCenter = () => {
+      // Stop any existing bounce animation first
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current)
+        animationFrameRef.current = null
+      }
+      
       const startX = positionRef.current.x
       const startY = positionRef.current.y
       const duration = 300 // ms - fast and snappy
@@ -71,19 +77,22 @@ export default function CardDetails({ card }: CardDetailsProps) {
         const elapsed = Date.now() - startTime
         const progress = Math.min(elapsed / duration, 1)
         
-        // Easing function for smooth, cheeky bounce-back (easeOutCubic with slight overshoot)
+        // Easing function for smooth, cheeky bounce-back (easeOutCubic)
         const easeOutCubic = 1 - Math.pow(1 - progress, 3)
         
-        // Calculate new position (easing from start to center)
+        // Calculate new position (easing from start to center 0,0)
         const newX = startX * (1 - easeOutCubic)
         const newY = startY * (1 - easeOutCubic)
         
+        // Update position ref immediately for smooth animation
+        positionRef.current = { x: newX, y: newY }
         setPosition({ x: newX, y: newY })
         
         if (progress < 1) {
           returnToCenterAnimationRef.current = requestAnimationFrame(animateReturn)
         } else {
           // Ensure we're exactly at center
+          positionRef.current = { x: 0, y: 0 }
           setPosition({ x: 0, y: 0 })
           returnToCenterAnimationRef.current = null
         }
@@ -347,7 +356,7 @@ export default function CardDetails({ card }: CardDetailsProps) {
       <div className="zoom-controls">
         <button 
           className="zoom-button" 
-          onClick={() => setZoom(prev => Math.max(0.5, prev - 0.25))}
+          onClick={() => setZoom(prev => Math.max(0.25, prev - 0.25))}
           aria-label="Zoom out"
         >
           −
