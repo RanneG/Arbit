@@ -5,7 +5,7 @@ import {
   type TradeMetrics,
   Rarity as CalculatorRarity,
 } from '@/lib/cardRarityCalculator'
-import { Card, Rarity } from '@/types/Card'
+import { Card, Rarity, Faction } from '@/types/Card'
 
 /**
  * POST /api/trades/close-with-card
@@ -121,7 +121,7 @@ export async function POST(request: NextRequest) {
       name: cardMetadata.name,
       title: `${cardMetadata.rarity} ${trade.pair.split('/')[0]} Card`,
       rarity: cardRarity,
-      faction: 'cosmic', // Default faction
+      faction: Faction.COSMIC, // Default faction
       stats: {
         longPosition: trade.direction === 'LONG' ? 80 : 20,
         shortPosition: trade.direction === 'SHORT' ? 80 : 20,
