@@ -70,10 +70,19 @@ export async function POST(request: NextRequest) {
     // For now, we'll use mock data structure
     // In production, this would be: const trade = await db.trades.findById(tradeId)
     // Mock trade data (replace with actual database query)
-    const trade = {
+    const trade: {
+      id: string
+      pair: string
+      direction: 'LONG' | 'SHORT'
+      entryPrice: number
+      notional: number
+      openedAt: string
+      userId: string
+      walletAddress: string
+    } = {
       id: tradeId,
       pair: 'BTC/USD', // Would come from DB
-      direction: 'LONG' as const, // Would come from DB
+      direction: 'LONG', // Would come from DB
       entryPrice: 40000, // Would come from DB
       notional: 5000, // Would come from DB
       openedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days ago
