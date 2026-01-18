@@ -1,9 +1,13 @@
 .portfolio-container {
-  padding-top: 220px; /* Increased top padding to avoid navigation clash */
-  padding-bottom: 30px;
+  padding-top: 100px; /* Adjusted for smaller nav bar */
+  padding-bottom: 40px;
+  padding-left: 20px;
+  padding-right: 20px;
   position: relative;
   min-height: 100vh;
   background: linear-gradient(180deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%);
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 
@@ -22,9 +26,9 @@
 }
 
 .header {
-  margin-bottom: 32px;
+  margin-bottom: 24px;
   margin-top: 0;
-  padding-top: 20px;
+  padding-top: 0;
 }
 
 .header-title-container {
@@ -119,63 +123,76 @@
 .portfolio-stats {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-  margin-bottom: 32px;
+  gap: 12px;
+  margin-bottom: 24px;
 }
 
 .stat-card {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
-  padding: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(30, 41, 59, 0.6);
+  border-radius: 12px;
+  padding: 16px 20px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
   text-align: center;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 0 60px rgba(139, 92, 246, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .stat-card::before {
   content: '';
   position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
-  opacity: 0;
-  transition: opacity 0.3s;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #8b5cf6, #6366f1, transparent);
+  opacity: 0.6;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% {
+    opacity: 0.3;
+    transform: translateX(-100%);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translateX(100%);
+  }
 }
 
 .stat-card:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(30, 41, 59, 0.8);
   border-color: rgba(139, 92, 246, 0.4);
-  transform: translateY(-4px);
+  transform: translateY(-2px);
   box-shadow: 
-    0 8px 24px rgba(0, 0, 0, 0.3),
-    0 0 40px rgba(139, 92, 246, 0.2);
-}
-
-.stat-card:hover::before {
-  opacity: 1;
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    0 0 80px rgba(139, 92, 246, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .stat-label {
   font-size: 14px;
-  color: #aaa;
+  color: #94a3b8;
   margin-bottom: 8px;
   font-weight: 500;
+  letter-spacing: 0.2px;
 }
 
 .stat-value {
-  font-size: 32px;
+  font-size: 36px;
   font-weight: bold;
-  background: linear-gradient(135deg, #fff 0%, #8b5cf6 100%);
+  background: linear-gradient(45deg, #8b5cf6, #6366f1, #3b82f6);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.3));
+  filter: drop-shadow(0 0 5px rgba(139, 92, 246, 0.5));
   transition: all 0.3s;
+  line-height: 1.2;
 }
 
 .stat-card:hover .stat-value {
@@ -187,10 +204,11 @@
 }
 
 .section-title {
-  font-size: 24px;
-  font-weight: bold;
+  font-size: 22px;
+  font-weight: 600;
   color: #fff;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
+  margin-top: 0;
 }
 
 .performance-metrics {
@@ -200,12 +218,39 @@
 }
 
 .metric-item {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(30, 41, 59, 0.6);
   border-radius: 12px;
   padding: 16px 24px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(148, 163, 184, 0.2);
   flex: 1;
   min-width: 200px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 0 60px rgba(139, 92, 246, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.metric-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #8b5cf6, #6366f1, transparent);
+  opacity: 0.6;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+.metric-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    0 0 80px rgba(139, 92, 246, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .metric-label {
@@ -435,9 +480,34 @@
   justify-items: center;
 }
 
-@media (min-width: 768px) {
+/* Portfolio Summary - Breakdown */
+.stat-card.primary {
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 640px) {
   .portfolio-stats {
     grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  
+  .stat-card.primary {
+    grid-column: span 2;
+  }
+  
+  .stat-card {
+    padding: 18px 20px;
+  }
+  
+  .stat-value {
+    font-size: 40px;
+  }
+}
+
+@media (min-width: 768px) {
+  .portfolio-container {
+    padding-left: 30px;
+    padding-right: 30px;
   }
   
   .holdings-grid {
@@ -447,6 +517,21 @@
   .cards-grid {
     grid-template-columns: repeat(3, 1fr);
   }
+  
+  .stat-value {
+    font-size: 42px;
+  }
+  
+  .stat-label {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .portfolio-container {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
 }
 
 @media (min-width: 1200px) {
@@ -454,3 +539,532 @@
     grid-template-columns: repeat(4, 1fr);
   }
 }
+
+.stat-breakdown {
+  font-size: 12px;
+  color: #94a3b8;
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+/* Portfolio Chart Section */
+.portfolio-chart-section {
+  margin-bottom: 24px;
+}
+
+.chart-header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.time-filter-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.time-filter-button {
+  padding: 6px 12px;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 6px;
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.time-filter-button:hover {
+  background: rgba(15, 23, 42, 1);
+  border-color: #8b5cf6;
+  color: #fff;
+}
+
+.time-filter-button.active {
+  background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+  border-color: #8b5cf6;
+  color: white;
+  box-shadow: 
+    0 4px 12px rgba(139, 92, 246, 0.5),
+    0 0 20px rgba(139, 92, 246, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Active Trades Section */
+.active-trades-section {
+  margin-bottom: 24px;
+}
+
+.active-trades-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.active-trade-card {
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 0 60px rgba(139, 92, 246, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.active-trade-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #8b5cf6, #6366f1, transparent);
+  opacity: 0.6;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+.active-trade-card:hover {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: rgba(139, 92, 246, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    0 0 80px rgba(139, 92, 246, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.trade-header-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.trade-pair {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.trade-direction-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 5px;
+}
+
+.trade-direction-badge.long {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+.trade-direction-badge.short {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.trade-status-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 5px;
+}
+
+.trade-status-badge.active {
+  background: rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
+}
+
+.trade-details-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.trade-price-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 14px;
+  color: #94a3b8;
+}
+
+.trade-pnl {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.trade-pnl.green {
+  color: #10b981;
+}
+
+.trade-pnl.red {
+  color: #ef4444;
+}
+
+.pnl-percent {
+  font-size: 14px;
+  margin-left: 6px;
+  opacity: 0.8;
+}
+
+.trade-meta-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.sell-to-create-card-button {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #48bb78, #38a169);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 4px;
+  box-shadow: 
+    0 4px 12px rgba(72, 187, 120, 0.5),
+    0 0 20px rgba(72, 187, 120, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.sell-to-create-card-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.sell-to-create-card-button:hover {
+  background: linear-gradient(135deg, #38a169, #2f855a);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 6px 20px rgba(72, 187, 120, 0.6),
+    0 0 30px rgba(72, 187, 120, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.sell-to-create-card-button:hover::before {
+  left: 100%;
+}
+
+/* Cards Collection Section */
+.cards-collection-section {
+  margin-bottom: 32px;
+}
+
+.cards-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.create-new-card-button {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 4px 12px rgba(139, 92, 246, 0.5),
+    0 0 20px rgba(139, 92, 246, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.create-new-card-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.create-new-card-button:hover {
+  background: linear-gradient(135deg, #7c3aed, #5b21b6);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 6px 20px rgba(139, 92, 246, 0.6),
+    0 0 30px rgba(139, 92, 246, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.create-new-card-button:hover::before {
+  left: 100%;
+}
+
+.card-nft-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.card-nft-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+  width: 100%;
+}
+
+.card-status-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 5px;
+}
+
+.card-status-badge.minted {
+  background: rgba(139, 92, 246, 0.2);
+  color: #a78bfa;
+}
+
+.card-source-trade {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.card-source-link {
+  color: #8b5cf6;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.card-source-link:hover {
+  color: #a78bfa;
+}
+
+.card-profit-locked {
+  font-size: 14px;
+  color: #10b981;
+  font-weight: 600;
+}
+
+.card-minted-date {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.empty-cards-message {
+  text-align: center;
+  padding: 40px 20px;
+  color: #94a3b8;
+}
+
+.empty-cards-message p {
+  margin-bottom: 16px;
+}
+
+/* Trade History Section */
+.trade-history-section {
+  margin-bottom: 24px;
+}
+
+.trade-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.view-all-cards-link {
+  color: #8b5cf6;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.view-all-cards-link:hover {
+  color: #a78bfa;
+  text-decoration: underline;
+}
+
+.trade-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.trade-history-entry {
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 0 60px rgba(139, 92, 246, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.trade-history-entry::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #8b5cf6, #6366f1, transparent);
+  opacity: 0.6;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+.trade-history-entry:hover {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: rgba(139, 92, 246, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    0 0 80px rgba(139, 92, 246, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.trade-history-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.trade-hold-time {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.trade-closed-date {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.trade-card-link {
+  color: #8b5cf6;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.trade-card-link:hover {
+  color: #a78bfa;
+}
+
+.no-card-minted {
+  font-size: 12px;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+/* Loading and Empty States */
+.loading-container,
+.empty-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  text-align: center;
+}
+
+.loading-text,
+.empty-text {
+  color: #94a3b8;
+  font-size: 16px;
+  margin-top: 16px;
+}
+
+.empty-title {
+  color: #fff;
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.browse-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 4px 12px rgba(139, 92, 246, 0.5),
+    0 0 20px rgba(139, 92, 246, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.browse-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.browse-button:hover {
+  background: linear-gradient(135deg, #7c3aed, #5b21b6);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 6px 20px rgba(139, 92, 246, 0.6),
+    0 0 30px rgba(139, 92, 246, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.browse-button:hover::before {
+  left: 100%;
+}
+

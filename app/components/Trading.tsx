@@ -183,14 +183,20 @@ export default function Trading() {
     }
 
     const notional = parseFloat(totalNotional) || 10
-    const currentWeightSum = longAssets.reduce((sum, a) => sum + a.weight, 0)
-    const defaultWeight = longAssets.length === 0 ? 1.0 : (1.0 - currentWeightSum) / (longAssets.length + 1)
-
-    setLongAssets([...longAssets, {
+    // When adding a new asset, distribute weights equally among all assets (existing + new)
+    const newLongAssets = [...longAssets, {
       token,
-      weight: defaultWeight,
+      weight: 1.0 / (longAssets.length + 1), // Equal weight: 1 / total count
       notional: notional / (longAssets.length + 1),
-    }])
+    }]
+    
+    // Normalize all weights to sum to 1.0
+    const normalized = newLongAssets.map(a => ({
+      ...a,
+      weight: 1.0 / newLongAssets.length, // Ensure equal weights
+    }))
+
+    setLongAssets(normalized)
     setLongTokenInput('')
     setError(null)
   }
@@ -210,24 +216,50 @@ export default function Trading() {
     }
 
     const notional = parseFloat(totalNotional) || 10
-    const currentWeightSum = shortAssets.reduce((sum, a) => sum + a.weight, 0)
-    const defaultWeight = shortAssets.length === 0 ? 1.0 : (1.0 - currentWeightSum) / (shortAssets.length + 1)
-
-    setShortAssets([...shortAssets, {
+    // When adding a new asset, distribute weights equally among all assets (existing + new)
+    const newShortAssets = [...shortAssets, {
       token,
-      weight: defaultWeight,
+      weight: 1.0 / (shortAssets.length + 1), // Equal weight: 1 / total count
       notional: notional / (shortAssets.length + 1),
-    }])
+    }]
+    
+    // Normalize all weights to sum to 1.0
+    const normalized = newShortAssets.map(a => ({
+      ...a,
+      weight: 1.0 / newShortAssets.length, // Ensure equal weights
+    }))
+
+    setShortAssets(normalized)
     setShortTokenInput('')
     setError(null)
   }
 
   const removeLongAsset = (index: number) => {
-    setLongAssets(longAssets.filter((_, i) => i !== index))
+    const newAssets = longAssets.filter((_, i) => i !== index)
+    if (newAssets.length > 0) {
+      // Normalize weights after removal so they sum to 1.0
+      const normalized = newAssets.map(a => ({
+        ...a,
+        weight: 1.0 / newAssets.length, // Equal weights after removal
+      }))
+      setLongAssets(normalized)
+    } else {
+      setLongAssets([])
+    }
   }
 
   const removeShortAsset = (index: number) => {
-    setShortAssets(shortAssets.filter((_, i) => i !== index))
+    const newAssets = shortAssets.filter((_, i) => i !== index)
+    if (newAssets.length > 0) {
+      // Normalize weights after removal so they sum to 1.0
+      const normalized = newAssets.map(a => ({
+        ...a,
+        weight: 1.0 / newAssets.length, // Equal weights after removal
+      }))
+      setShortAssets(normalized)
+    } else {
+      setShortAssets([])
+    }
   }
 
   const updateLongWeight = (index: number, weight: number) => {

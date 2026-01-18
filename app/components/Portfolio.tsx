@@ -1,79 +1,222 @@
 'use client'
 
+/**
+ * Portfolio Component - Redesigned
+ * Follows PORTFOLIO_DESIGN_PROMPT.md structure:
+ * - Active Trades (current positions) - separated from cards
+ * - Trade History (closed trades → cards) - shows connections
+ * - Portfolio Performance Chart - shows total value over time
+ */
+
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import Card from './Card'
 import WalletConnect from './WalletConnect'
+import PortfolioChart from './PortfolioChart'
 import { Card as CardType } from '@/types/Card'
 import './styles/Portfolio.css'
 
+// Data structure matching PORTFOLIO_DESIGN_PROMPT.md
+interface ActiveTrade {
+  id: string
+  pair: string // "BTC/USD"
+  direction: 'LONG' | 'SHORT'
+  entryPrice: number
+  currentPrice: number
+  pnl: number // current profit/loss
+  pnlPercent: number
+  notional: number
+  openedAt: string // ISO timestamp
+  status: 'ACTIVE'
+}
+
+interface CardNFT {
+  id: string
+  name: string
+  imageUrl?: string
+  sourceTradeId: string // Links back to trade history
+  profitLocked: number // P&L from source trade
+  mintedAt: string // ISO timestamp
+  rarity?: string
+  currentValue: number
+  status: 'MINTED'
+  // CardType fields for compatibility
+  title?: string
+  faction?: string
+  stats?: any
+  description?: string
+  marketValue?: number
+}
+
+interface ClosedTrade {
+  id: string
+  pair: string
+  direction: 'LONG' | 'SHORT'
+  entryPrice: number
+  exitPrice: number
+  pnl: number // final profit/loss
+  pnlPercent: number
+  holdTime: number // days
+  openedAt: string
+  closedAt: string
+  cardId?: string // Link to created card (if exists)
+  status: 'CLOSED'
+}
+
+interface PortfolioSummary {
+  activeTradesCount: number
+  cardsCount: number
+  totalValue: number
+  activeTradesValue: number
+  cardsValue: number
+  winRate: number // 0-1, calculated from closed trades
+}
+
+interface TimeSeriesPoint {
+  timestamp: string
+  totalValue: number
+  activeTradesValue: number
+  cardsValue: number
+}
+
 interface PortfolioData {
   walletAddress: string
-  totalCards: number
-  totalValue: number
-  cards: CardType[]
-  recentTrades: TradeHistory[]
-  performance: {
-    totalTrades: number
-    winRate: number
-    totalProfit: number
-  }
-  holdings?: {
-    byRarity: Record<string, number>
-    byFaction: Record<string, number>
-    topCards: CardType[]
+  activeTrades: ActiveTrade[]
+  cards: CardNFT[]
+  tradeHistory: ClosedTrade[]
+  portfolioHistory: TimeSeriesPoint[]
+  summary: PortfolioSummary
+}
+
+// Calculate portfolio summary from data
+function calculatePortfolioSummary(
+  activeTrades: ActiveTrade[],
+  cards: CardNFT[],
+  tradeHistory: ClosedTrade[]
+): PortfolioSummary {
+  // Active trades value (current market value)
+  const activeTradesValue = activeTrades.reduce(
+    (sum, trade) => sum + (trade.notional + trade.pnl),
+    0
+  )
+
+  // Cards value (locked value from sold trades)
+  const cardsValue = cards.reduce(
+    (sum, card) => sum + (card.currentValue || card.profitLocked || 0),
+    0
+  )
+
+  // Total portfolio value
+  const totalValue = activeTradesValue + cardsValue
+
+  // Win rate from closed trades
+  const closedTrades = tradeHistory
+  const winningTrades = closedTrades.filter(t => t.pnl > 0)
+  const winRate = closedTrades.length > 0 
+    ? winningTrades.length / closedTrades.length 
+    : 0
+
+  return {
+    activeTradesCount: activeTrades.length,
+    cardsCount: cards.length,
+    totalValue,
+    activeTradesValue,
+    cardsValue,
+    winRate
   }
 }
 
-interface TradeHistory {
-  id: string
-  cardId: string
-  cardName: string
-  type: 'buy' | 'sell'
-  amount: number
-  timestamp: string
-  status: 'completed' | 'pending' | 'failed'
-}
+// Create mock portfolio data for demo
+function createMockPortfolio(walletAddress: string, existingCards: CardType[] = []): PortfolioData {
+  // Mock active trades
+  const activeTrades: ActiveTrade[] = [
+    {
+      id: 'trade_active_1',
+      pair: 'BTC/USD',
+      direction: 'LONG',
+      entryPrice: 45000,
+      currentPrice: 47500,
+      pnl: 250,
+      pnlPercent: 5.5,
+      notional: 1000,
+      openedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+      status: 'ACTIVE'
+    },
+    {
+      id: 'trade_active_2',
+      pair: 'ETH/USD',
+      direction: 'SHORT',
+      entryPrice: 2400,
+      currentPrice: 2350,
+      pnl: 50,
+      pnlPercent: 2.08,
+      notional: 1000,
+      openedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+      status: 'ACTIVE'
+    }
+  ]
 
-const createMockPortfolio = (walletAddress: string, cards: CardType[] = []): PortfolioData => {
-  const byRarity: Record<string, number> = {}
-  const byFaction: Record<string, number> = {}
-  
-  cards.forEach(card => {
-    byRarity[card.rarity] = (byRarity[card.rarity] || 0) + 1
-    byFaction[card.faction] = (byFaction[card.faction] || 0) + 1
-  })
-  
-  const topCards = [...cards]
-    .sort((a, b) => (b.marketValue || 0) - (a.marketValue || 0))
-    .slice(0, 5)
-  
+  // Convert existing cards to CardNFT format
+  const cards: CardNFT[] = existingCards.map((card, index) => ({
+    id: card.id,
+    name: card.name,
+    imageUrl: card.imageUrl,
+    sourceTradeId: `trade_${card.id}`,
+    profitLocked: (card.marketValue || 0) * 0.1, // Estimate 10% of card value as profit
+    mintedAt: card.mintedAt || new Date(Date.now() - (index + 1) * 7 * 24 * 60 * 60 * 1000).toISOString(),
+    rarity: card.rarity,
+    currentValue: card.marketValue || 0,
+    status: 'MINTED',
+    title: card.title,
+    faction: card.faction,
+    stats: card.stats,
+    description: card.description,
+    marketValue: card.marketValue
+  }))
+
+  // Mock trade history from cards
+  const tradeHistory: ClosedTrade[] = cards.map((card, index) => ({
+    id: card.sourceTradeId,
+    pair: `${card.name.split(' ')[0]}/USD`, // Estimate from card name
+    direction: index % 2 === 0 ? 'LONG' : 'SHORT',
+    entryPrice: 1000 + index * 100,
+    exitPrice: 1000 + index * 100 + (card.profitLocked || 0),
+    pnl: card.profitLocked || 0,
+    pnlPercent: ((card.profitLocked || 0) / 1000) * 100,
+    holdTime: 3 + index,
+    openedAt: new Date(new Date(card.mintedAt).getTime() - (3 + index) * 24 * 60 * 60 * 1000).toISOString(),
+    closedAt: card.mintedAt,
+    cardId: card.id,
+    status: 'CLOSED'
+  }))
+
+  // Generate portfolio history (mock time series)
+  const now = Date.now()
+  const portfolioHistory: TimeSeriesPoint[] = []
+  const baseValue = 1000
+
+  for (let i = 30; i >= 0; i--) {
+    const date = new Date(now - i * 24 * 60 * 60 * 1000)
+    const activeValue = i > 2 ? baseValue * 0.8 : baseValue * 0.6 // Active trades decrease over time
+    const cardsValue = baseValue * 0.4 + (30 - i) * 10 // Cards value increases over time
+    portfolioHistory.push({
+      timestamp: date.toISOString(),
+      totalValue: activeValue + cardsValue,
+      activeTradesValue: activeValue,
+      cardsValue: cardsValue
+    })
+  }
+
+  const summary = calculatePortfolioSummary(activeTrades, cards, tradeHistory)
+
   return {
     walletAddress,
-    totalCards: cards.length,
-    totalValue: cards.reduce((sum, card) => sum + (card.marketValue || 0), 0),
+    activeTrades,
     cards,
-    recentTrades: [
-      {
-        id: '1',
-        cardId: '1',
-        cardName: cards[0]?.name || 'Nexus Prime',
-        type: 'buy',
-        amount: 10000,
-        timestamp: new Date().toISOString(),
-        status: 'completed',
-      },
-    ],
-    performance: {
-      totalTrades: 12,
-      winRate: 75,
-      totalProfit: 5000,
-    },
-    holdings: {
-      byRarity,
-      byFaction,
-      topCards,
-    },
+    tradeHistory,
+    portfolioHistory,
+    summary
   }
 }
 
@@ -83,6 +226,7 @@ export default function Portfolio() {
   const [loading, setLoading] = useState(true)
   const [walletAddress, setWalletAddress] = useState<string | null>(null)
   const [showInfoTooltip, setShowInfoTooltip] = useState(false)
+  const [timeFilter, setTimeFilter] = useState<'7D' | '30D' | '90D' | 'ALL'>('30D')
 
   useEffect(() => {
     const loadPortfolio = async () => {
@@ -96,37 +240,25 @@ export default function Portfolio() {
       setWalletAddress(storedWallet)
 
       try {
+        // Try to get portfolio data
         const response = await fetch(`/api/portfolio/${storedWallet}`)
         if (response.ok) {
           const data = await response.json()
-          // Process holdings data if not present
-          if (data.cards && data.cards.length > 0 && !data.holdings) {
-            const byRarity: Record<string, number> = {}
-            const byFaction: Record<string, number> = {}
-            
-            data.cards.forEach((card: CardType) => {
-              byRarity[card.rarity] = (byRarity[card.rarity] || 0) + 1
-              byFaction[card.faction] = (byFaction[card.faction] || 0) + 1
-            })
-            
-            const topCards = [...data.cards]
-              .sort((a: CardType, b: CardType) => (b.marketValue || 0) - (a.marketValue || 0))
-              .slice(0, 5)
-            
-            data.holdings = {
-              byRarity,
-              byFaction,
-              topCards,
-            }
-          }
-          setPortfolio(data)
+          
+          // Convert existing data format to new structure
+          // For now, use mock data structure
+          const existingCards = data.cards || []
+          const mockPortfolio = createMockPortfolio(storedWallet, existingCards)
+          setPortfolio(mockPortfolio)
         } else {
-          // Try to get user cards first
+          // Try to get user cards
           try {
             const cardsResponse = await fetch(`/api/users/${storedWallet}/cards`)
             if (cardsResponse.ok) {
               const cardsData = await cardsResponse.json()
-              setPortfolio(createMockPortfolio(storedWallet, cardsData.cards || []))
+              const existingCards = cardsData.cards || []
+              const mockPortfolio = createMockPortfolio(storedWallet, existingCards)
+              setPortfolio(mockPortfolio)
             } else {
               setPortfolio(createMockPortfolio(storedWallet))
             }
@@ -144,71 +276,54 @@ export default function Portfolio() {
     loadPortfolio()
   }, [])
 
-  const handleCardPress = (card: CardType) => {
+  const handleWalletConnected = (address: string) => {
+    setWalletAddress(address || null)
+    if (address) {
+      // Reload portfolio data when wallet connects
+      window.location.reload()
+    }
+  }
+
+  const handleCloseTrade = (tradeId: string) => {
+    // Navigate to trading page to close trade
+    router.push(`/trading`)
+    // In a real app, this would call an API to close the trade and create a card
+  }
+
+  const handleCardPress = (card: CardNFT) => {
     router.push(`/card/${card.id}`)
+  }
+
+  const formatTimeAgo = (timestamp: string): string => {
+    const now = Date.now()
+    const time = new Date(timestamp).getTime()
+    const diffMs = now - time
+    const diffDays = Math.floor(diffMs / (24 * 60 * 60 * 1000))
+    
+    if (diffDays === 0) return 'Today'
+    if (diffDays === 1) return '1 day ago'
+    if (diffDays < 7) return `${diffDays} days ago`
+    const diffWeeks = Math.floor(diffDays / 7)
+    if (diffWeeks === 1) return '1 week ago'
+    return `${diffWeeks} weeks ago`
+  }
+
+  const formatDate = (timestamp: string): string => {
+    return new Date(timestamp).toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric',
+      year: 'numeric'
+    })
   }
 
   if (loading) {
     return (
-      <div className="screen-container">
+      <div className="screen-container portfolio-container">
         <div className="loading-container">
           <p className="loading-text">Loading portfolio...</p>
         </div>
       </div>
     )
-  }
-
-  const handleWalletConnected = (address: string) => {
-    setWalletAddress(address || null)
-    if (address) {
-      // Reload portfolio data when wallet connects
-      const loadPortfolio = async () => {
-        setLoading(true)
-        try {
-          const response = await fetch(`/api/portfolio/${address}`)
-          if (response.ok) {
-            const data = await response.json()
-            if (data.cards && data.cards.length > 0 && !data.holdings) {
-              const byRarity: Record<string, number> = {}
-              const byFaction: Record<string, number> = {}
-              
-              data.cards.forEach((card: CardType) => {
-                byRarity[card.rarity] = (byRarity[card.rarity] || 0) + 1
-                byFaction[card.faction] = (byFaction[card.faction] || 0) + 1
-              })
-              
-              const topCards = [...data.cards]
-                .sort((a: CardType, b: CardType) => (b.marketValue || 0) - (a.marketValue || 0))
-                .slice(0, 5)
-              
-              data.holdings = {
-                byRarity,
-                byFaction,
-                topCards,
-              }
-            }
-            setPortfolio(data)
-          } else {
-            try {
-              const cardsResponse = await fetch(`/api/users/${address}/cards`)
-              if (cardsResponse.ok) {
-                const cardsData = await cardsResponse.json()
-                setPortfolio(createMockPortfolio(address, cardsData.cards || []))
-              } else {
-                setPortfolio(createMockPortfolio(address))
-              }
-            } catch {
-              setPortfolio(createMockPortfolio(address))
-            }
-          }
-        } catch (error) {
-          setPortfolio(createMockPortfolio(address))
-        } finally {
-          setLoading(false)
-        }
-      }
-      loadPortfolio()
-    }
   }
 
   if (!walletAddress) {
@@ -217,25 +332,9 @@ export default function Portfolio() {
         <div className="header">
           <div className="header-title-container">
             <h1 className="header-title">Portfolio</h1>
-            <div className="info-button-container">
-              <button
-                className="info-button"
-                onMouseEnter={() => setShowInfoTooltip(true)}
-                onMouseLeave={() => setShowInfoTooltip(false)}
-                onClick={() => setShowInfoTooltip(!showInfoTooltip)}
-                aria-label="Information about portfolio"
-              >
-                <span className="info-icon">i</span>
-              </button>
-              {showInfoTooltip && (
-                <div className="info-tooltip">
-                  View your trading card collection, portfolio value, holdings breakdown by rarity and faction, and your trading performance metrics.
-                </div>
-              )}
-            </div>
           </div>
           <p className="header-subtitle">
-            Connect your wallet to view your trading card portfolio
+            Connect your wallet to view your trading portfolio
           </p>
         </div>
         <div className="wallet-connect-section">
@@ -247,12 +346,18 @@ export default function Portfolio() {
 
   if (!portfolio) {
     return (
-      <div className="screen-container">
+      <div className="screen-container portfolio-container">
         <div className="empty-container">
           <h2 className="empty-title">No Portfolio Data</h2>
           <p className="empty-text">
             Start trading to build your portfolio!
           </p>
+          <button 
+            className="browse-button"
+            onClick={() => router.push('/trading')}
+          >
+            Go to Trading
+          </button>
         </div>
       </div>
     )
@@ -263,157 +368,147 @@ export default function Portfolio() {
       <div className="header">
         <div className="header-title-container">
           <h1 className="header-title">Portfolio</h1>
-          <div className="info-button-container">
-            <button
-              className="info-button"
-              onMouseEnter={() => setShowInfoTooltip(true)}
-              onMouseLeave={() => setShowInfoTooltip(false)}
-              onClick={() => setShowInfoTooltip(!showInfoTooltip)}
-              aria-label="Information about portfolio"
-            >
-              <span className="info-icon">i</span>
-            </button>
-            {showInfoTooltip && (
-              <div className="info-tooltip">
-                View your trading card collection, portfolio value, holdings breakdown by rarity and faction, and your trading performance metrics.
-              </div>
-            )}
-          </div>
         </div>
         <p className="header-subtitle">
           {portfolio.walletAddress.slice(0, 6)}...{portfolio.walletAddress.slice(-4)}
         </p>
       </div>
 
-      {/* Portfolio Stats */}
+      {/* Header & Summary Metrics */}
       <div className="portfolio-stats">
         <div className="stat-card">
-          <div className="stat-label">Total Cards</div>
-          <div className="stat-value">{portfolio.totalCards}</div>
+          <div className="stat-label">Active Trades</div>
+          <div className="stat-value">{portfolio.summary.activeTradesCount}</div>
         </div>
         <div className="stat-card">
-          <div className="stat-label">Portfolio Value</div>
-          <div className="stat-value">${portfolio.totalValue.toLocaleString()}</div>
+          <div className="stat-label">Cards Owned</div>
+          <div className="stat-value">{portfolio.summary.cardsCount}</div>
         </div>
-        <div className="stat-card">
-          <div className="stat-label">Total Trades</div>
-          <div className="stat-value">{portfolio.performance.totalTrades}</div>
+        <div className="stat-card primary">
+          <div className="stat-label">Total Portfolio Value</div>
+          <div className="stat-value">${portfolio.summary.totalValue.toFixed(2)}</div>
+          <div className="stat-breakdown">
+            ${portfolio.summary.activeTradesValue.toFixed(2)} active + ${portfolio.summary.cardsValue.toFixed(2)} cards
+          </div>
         </div>
         <div className="stat-card">
           <div className="stat-label">Win Rate</div>
-          <div className="stat-value">{portfolio.performance.winRate}%</div>
+          <div className="stat-value">{(portfolio.summary.winRate * 100).toFixed(1)}%</div>
         </div>
       </div>
 
-      {/* Performance Metrics */}
-      <div className="performance-section">
-        <h2 className="section-title">Performance</h2>
-        <div className="performance-metrics">
-          <div className="metric-item">
-            <span className="metric-label">Total Profit</span>
-            <span className="metric-value profit">
-              +${portfolio.performance.totalProfit.toLocaleString()}
-            </span>
-          </div>
-          <div className="metric-item">
-            <span className="metric-label">Win Rate</span>
-            <span className="metric-value">{portfolio.performance.winRate}%</span>
+      {/* Portfolio Performance Chart (MVP Priority) */}
+      <div className="portfolio-chart-section">
+        <div className="chart-header-section">
+          <h2 className="section-title">Portfolio Performance</h2>
+          <div className="time-filter-buttons">
+            {(['7D', '30D', '90D', 'ALL'] as const).map((filter) => (
+              <button
+                key={filter}
+                className={`time-filter-button ${timeFilter === filter ? 'active' : ''}`}
+                onClick={() => setTimeFilter(filter)}
+              >
+                {filter}
+              </button>
+            ))}
           </div>
         </div>
+        <PortfolioChart 
+          portfolioHistory={portfolio.portfolioHistory} 
+          timeFilter={timeFilter}
+        />
       </div>
 
-      {/* Recent Trades */}
-      {portfolio.recentTrades.length > 0 && (
-        <div className="trades-section">
-          <h2 className="section-title">Recent Trades</h2>
-          <div className="trades-list">
-            {portfolio.recentTrades.map((trade) => (
-              <div key={trade.id} className="trade-item">
-                <div className="trade-info">
-                  <span className="trade-card-name">{trade.cardName}</span>
-                  <span className={`trade-type ${trade.type}`}>
-                    {trade.type === 'buy' ? 'Buy' : 'Sell'}
-                  </span>
-                </div>
-                <div className="trade-details">
-                  <span className="trade-amount">${trade.amount.toLocaleString()}</span>
-                  <span className={`trade-status ${trade.status}`}>
-                    {trade.status}
-                  </span>
-                </div>
-                <div className="trade-time">
-                  {new Date(trade.timestamp).toLocaleDateString()}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Holdings Breakdown */}
-      {portfolio.holdings && (
-        <div className="holdings-section">
-          <h2 className="section-title">Holdings Breakdown</h2>
-          <div className="holdings-grid">
-            <div className="holdings-card">
-              <h3 className="holdings-subtitle">By Rarity</h3>
-              <div className="holdings-list">
-                {Object.entries(portfolio.holdings.byRarity).map(([rarity, count]) => (
-                  <div key={rarity} className="holdings-item">
-                    <span className="holdings-label">{rarity.charAt(0).toUpperCase() + rarity.slice(1)}</span>
-                    <span className="holdings-value">{count}</span>
+      {/* Active Trades Section (Current Positions) */}
+      {portfolio.activeTrades.length > 0 && (
+        <div className="active-trades-section">
+          <h2 className="section-title">Active Trading Positions</h2>
+          <div className="active-trades-list">
+            {portfolio.activeTrades.map((trade) => {
+              const pnlColor = trade.pnl >= 0 ? 'green' : 'red'
+              return (
+                <div key={trade.id} className="active-trade-card">
+                  <div className="trade-header-row">
+                    <span className="trade-pair">{trade.pair}</span>
+                    <span className={`trade-direction-badge ${trade.direction.toLowerCase()}`}>
+                      {trade.direction}
+                    </span>
+                    <span className="trade-status-badge active">ACTIVE</span>
                   </div>
-                ))}
-              </div>
-            </div>
-            <div className="holdings-card">
-              <h3 className="holdings-subtitle">By Faction</h3>
-              <div className="holdings-list">
-                {Object.entries(portfolio.holdings.byFaction).map(([faction, count]) => (
-                  <div key={faction} className="holdings-item">
-                    <span className="holdings-label">{faction.charAt(0).toUpperCase() + faction.slice(1)}</span>
-                    <span className="holdings-value">{count}</span>
+                  <div className="trade-details-row">
+                    <div className="trade-price-info">
+                      <div>Entry: ${trade.entryPrice.toLocaleString()}</div>
+                      <div>Current: ${trade.currentPrice.toLocaleString()}</div>
+                    </div>
+                    <div className={`trade-pnl ${pnlColor}`}>
+                      {trade.pnl >= 0 ? '+' : ''}{trade.pnl.toFixed(2)}
+                      <span className="pnl-percent">
+                        ({trade.pnlPercent >= 0 ? '+' : ''}{trade.pnlPercent.toFixed(2)}%)
+                      </span>
+                    </div>
                   </div>
-                ))}
-              </div>
-            </div>
+                  <div className="trade-meta-row">
+                    <span className="trade-time-open">Opened {formatTimeAgo(trade.openedAt)}</span>
+                    <span className="trade-notional">Notional: ${trade.notional}</span>
+                  </div>
+                  <button 
+                    className="sell-to-create-card-button"
+                    onClick={() => handleCloseTrade(trade.id)}
+                  >
+                    Sell to Create Card
+                  </button>
+                </div>
+              )
+            })}
           </div>
         </div>
       )}
 
-      {/* Top Valued Cards */}
-      {portfolio.holdings && portfolio.holdings.topCards.length > 0 && (
-        <div className="top-cards-section">
-          <h2 className="section-title">Top Valued Cards</h2>
-          <div className="cards-grid">
-            {portfolio.holdings.topCards.map((card) => (
-              <div key={card.id} className="card-with-value">
-                <Card card={card} onPress={() => handleCardPress(card)} size="small" />
-                <div className="card-value-badge">
-                  ${(card.marketValue || 0).toLocaleString()}
-                </div>
-              </div>
-            ))}
+      {/* Trade History (Closed Trades → Cards) */}
+      {portfolio.tradeHistory.length > 0 && (
+        <div className="trade-history-section">
+          <div className="trade-history-header">
+            <h2 className="section-title">Trade History</h2>
+            <Link 
+              href="/collection"
+              className="view-all-cards-link"
+            >
+              View All Cards →
+            </Link>
           </div>
-        </div>
-      )}
-
-      {/* Collection Cards */}
-      {portfolio.cards.length > 0 && (
-        <div className="collection-section">
-          <h2 className="section-title">All Your Cards ({portfolio.cards.length})</h2>
-          <div className="cards-grid">
-            {portfolio.cards.map((card) => (
-              <div key={card.id} className="card-with-value">
-                <Card card={card} onPress={() => handleCardPress(card)} size="small" />
-                <div className="card-value-badge">
-                  ${(card.marketValue || 0).toLocaleString()}
+          <div className="trade-history-list">
+            {portfolio.tradeHistory.map((trade) => {
+              const pnlColor = trade.pnl >= 0 ? 'green' : 'red'
+              return (
+                <div key={trade.id} className="trade-history-entry" id={`trade-${trade.id}`}>
+                  <div className="trade-history-info">
+                    <span className="trade-pair">{trade.pair}</span>
+                    <span className={`trade-direction-badge ${trade.direction.toLowerCase()}`}>
+                      {trade.direction}
+                    </span>
+                    <div className={`trade-pnl ${pnlColor}`}>
+                      {trade.pnl >= 0 ? '+' : ''}{trade.pnl.toFixed(2)}
+                    </div>
+                    <div className="trade-hold-time">Held for {trade.holdTime} days</div>
+                    <div className="trade-closed-date">Closed {formatDate(trade.closedAt)}</div>
+                  </div>
+                  {trade.cardId ? (
+                    <Link 
+                      href={`/card/${trade.cardId}`} 
+                      className="trade-card-link"
+                    >
+                      → Card: {portfolio.cards.find(c => c.id === trade.cardId)?.name || 'View Card'}
+                    </Link>
+                  ) : (
+                    <span className="no-card-minted">No card minted</span>
+                  )}
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       )}
     </div>
   )
 }
+

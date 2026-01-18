@@ -4,10 +4,12 @@ A React Native mobile app for collecting and trading space-themed character card
 
 ## 🎴 Features
 
+- **Trade-to-Mint Integration**: Mint character cards by executing live Pear Protocol trades (core hackathon requirement)
 - **Card Gallery**: Browse all available space-themed trading cards with search and filters
 - **Collection**: View your personal card collection with stats
 - **Trading Stats**: Learn crypto trading concepts through gamified stats (Long, Short, Leverage, Market IQ)
 - **Beautiful UI**: Space-themed design with gradient effects, rarity emojis, and animations
+- **Live Trading Interface**: Pear Garden-style trading interface with real-time candlestick charts
 - **Backend Ready**: API service layer prepared for Hyperliquid/Pear integration
 
 ## 📱 Project Structure
@@ -101,13 +103,54 @@ See `docs/TRADING_STATS_GUIDE.md` for detailed explanations.
 
 The app is designed to work with a backend that integrates Hyperliquid and Pear API. See `docs/BACKEND_INTEGRATION.md` for API endpoint specifications.
 
+### Trade-to-Mint Integration
+
+**POST** `/api/mint-card` - Core hackathon integration endpoint that executes a real Pear Protocol trade when minting a character card.
+
+When a user mints a card:
+1. Frontend sends `characterId` and `userWallet` to `/api/mint-card`
+2. Backend maps character to thematic basket trade configuration
+3. Backend executes real Pear Protocol basket trade (using `pearClient.executeBasketTrade()`)
+4. Backend receives real `orderId` from Pear Protocol
+5. Backend generates card metadata with `orderId` embedded
+6. Frontend displays minted card with real trade confirmation
+
+**Example Request:**
+```json
+{
+  "characterId": "nexus-prime",
+  "userWallet": "0x..."
+}
+```
+
+**Example Response:**
+```json
+{
+  "success": true,
+  "trade": {
+    "orderId": "pear_ord_abc123",
+    "status": "filled",
+    "characterId": "nexus-prime"
+  },
+  "card": {
+    "id": "nexus-prime-pear_ord_abc123",
+    "name": "Nexus Prime",
+    "description": "... Trade Order ID: pear_ord_abc123"
+  }
+}
+```
+
+See `DEMO_SCRIPT.md` for the complete demo flow.
+
 ### Expected API Endpoints
 
+- `POST /api/mint-card` - **Trade-to-Mint Integration** (core hackathon requirement)
 - `GET /api/cards` - Get all cards
 - `GET /api/cards/:id` - Get card by ID
 - `GET /api/users/:walletAddress/cards` - Get user's collection
-- `GET /api/hyperliquid/market/:pair` - Get market data
-- `POST /api/pear/pair-trade` - Execute pair trade
+- `GET /api/market/pairs` - Get available trading pairs
+- `GET /api/market/ticker?pair=...` - Get market ticker data
+- `POST /api/execute-trade` - Execute custom basket trade
 
 ## 🖼️ Adding Card Images
 

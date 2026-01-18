@@ -24,6 +24,47 @@ export default function Home() {
     }, 1500) // Match animation duration
   }
 
+  const handleMintCard = async () => {
+    if (!walletAddress) {
+      alert('Please connect your wallet first')
+      return
+    }
+
+    setIsGenerating(true)
+    try {
+      // Mint Nexus Prime card with real Pear Protocol trade
+      const response = await fetch('/api/mint-card', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          characterId: 'nexus-prime',
+          userWallet: walletAddress,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok && data.success && data.card) {
+        // Display the minted card with real trade orderId
+        setDemoCard(data.card)
+        console.log('✅ Card minted! Trade Order ID:', data.trade.orderId)
+      } else {
+        // Show error message
+        const errorMsg = data.error || 'Failed to mint card'
+        alert(`Mint failed: ${errorMsg}`)
+        console.error('Mint card error:', data)
+      }
+    } catch (error) {
+      console.error('Error minting card:', error)
+      alert('Failed to mint card. Please check console for details.')
+    } finally {
+      setIsGenerating(false)
+    }
+  }
+
+  // Legacy demo card function (keeping for backward compatibility)
   const handleGenerateDemoCard = async () => {
     setIsGenerating(true)
     try {
@@ -103,15 +144,20 @@ export default function Home() {
           <WalletConnect onConnected={handleWalletConnected} />
         </div>
 
-        {/* Generate Demo Card Button */}
+        {/* Mint Card Button - Trade-to-Mint Integration */}
         <div className="demo-card-section">
           <button
             className="generate-demo-button"
-            onClick={handleGenerateDemoCard}
-            disabled={isGenerating}
+            onClick={handleMintCard}
+            disabled={isGenerating || !walletAddress}
           >
-            {isGenerating ? 'Generating...' : 'Generate Demo Card'}
+            {isGenerating ? 'Minting...' : 'Mint & Trade (Nexus Prime)'}
           </button>
+          {!walletAddress && (
+            <p className="text-yellow-400 text-sm mt-2 text-center">
+              Connect wallet to mint card via real trade
+            </p>
+          )}
         </div>
 
         {/* Demo Card Display */}
