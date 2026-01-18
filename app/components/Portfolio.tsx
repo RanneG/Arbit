@@ -284,10 +284,53 @@ export default function Portfolio() {
     }
   }
 
-  const handleCloseTrade = (tradeId: string) => {
-    // Navigate to trading page to close trade
-    router.push(`/trading`)
-    // In a real app, this would call an API to close the trade and create a card
+  const handleCloseTrade = async (trade: ActiveTrade) => {
+    // Confirm with user before closing
+    const confirmed = window.confirm(
+      `Close ${trade.pair} ${trade.direction} position and mint card?\n\n` +
+      `Current P&L: ${trade.pnl >= 0 ? '+' : ''}$${trade.pnl.toFixed(2)} (${trade.pnlPercent >= 0 ? '+' : ''}${trade.pnlPercent.toFixed(2)}%)`
+    )
+
+    if (!confirmed) return
+
+    try {
+      // Use currentPrice from trade as exit price
+      const exitPrice = trade.currentPrice
+
+      // Call close-with-card endpoint
+      const response = await fetch('/api/trades/close-with-card', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          tradeId: trade.id,
+          exitPrice,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok && data.success) {
+        // Show success message with card details
+        alert(
+          `✅ Trade closed!\n\n` +
+          `Minted ${data.card.rarity} card: ${data.card.name}\n` +
+          `Card Value: $${data.card.value.toFixed(2)}`
+        )
+
+        // Reload portfolio to show updated data
+        window.location.reload()
+      } else {
+        // Show error message
+        const errorMsg = data.error || 'Failed to close trade and mint card'
+        alert(`Error: ${errorMsg}\n\n${data.details || ''}`)
+        console.error('Close trade error:', data)
+      }
+    } catch (error) {
+      console.error('Error closing trade:', error)
+      alert('Failed to close trade. Please check console for details.')
+    }
   }
 
   const handleCardPress = (card: CardNFT) => {
@@ -453,7 +496,7 @@ export default function Portfolio() {
                   </div>
                   <button 
                     className="sell-to-create-card-button"
-                    onClick={() => handleCloseTrade(trade.id)}
+                    onClick={() => handleCloseTrade(trade)}
                   >
                     Sell to Create Card
                   </button>

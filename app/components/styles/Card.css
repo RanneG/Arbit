@@ -1,8 +1,10 @@
 .card-wrapper {
   display: flex;
   justify-content: center;
-  margin: 0;  /* Removed margin to let grid gap handle spacing */
+  align-items: start;
+  margin: 0;
   width: 100%;
+  max-width: 100%;
 }
 
 .card-wrapper.clickable {

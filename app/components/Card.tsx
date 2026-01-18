@@ -91,11 +91,25 @@ export default function Card({ card, onPress, size = 'medium' }: CardProps) {
     background: getRarityColors(card.rarity),
   }
 
-  const cardStyle = {
-    width: `${300 * sizeMultiplier}px`,  // Optimized base width for better grid fit
-    height: `${420 * sizeMultiplier}px`, // Optimized base height (maintains aspect ratio)
+  // Responsive sizing with aspect ratio
+  const aspectRatio = 5 / 7 // Width:Height ratio (approximately 300:420)
+  
+  const cardStyle: React.CSSProperties = {
     transition: 'all 0.3s ease',
-    maxWidth: '100%',
+  }
+
+  if (size === 'large') {
+    // Large cards: fixed max width, responsive
+    cardStyle.width = '100%'
+    cardStyle.maxWidth = '700px'
+    cardStyle.aspectRatio = aspectRatio.toString()
+    cardStyle.height = 'auto'
+  } else {
+    // Small/Medium cards in grid: fill container, maintain aspect ratio
+    cardStyle.width = '100%'
+    cardStyle.aspectRatio = aspectRatio.toString()
+    cardStyle.height = 'auto'
+    cardStyle.maxWidth = '100%'
   }
 
   const CardContent = (

@@ -1,10 +1,14 @@
 .details-screen {
-  padding-top: 220px;  /* Increased top padding to avoid navigation clash */
-  padding-bottom: 200px;  /* Bottom padding for action button */
+  padding-top: 100px;
+  padding-bottom: 20px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+  background: linear-gradient(180deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%);
 }
 
 .back-button {
@@ -27,13 +31,165 @@
   border-color: #fff;
 }
 
+.zoom-controls {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.zoom-button {
+  background: rgba(139, 92, 246, 0.3);
+  border: 1px solid rgba(139, 92, 246, 0.5);
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.zoom-button:hover {
+  background: rgba(139, 92, 246, 0.5);
+  border-color: rgba(139, 92, 246, 0.7);
+}
+
+.zoom-level {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  min-width: 50px;
+  text-align: center;
+}
+
+.zoom-reset-button {
+  background: rgba(148, 163, 184, 0.3);
+  border: 1px solid rgba(148, 163, 184, 0.5);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.2s;
+  margin-left: 4px;
+}
+
+.zoom-reset-button:hover {
+  background: rgba(148, 163, 184, 0.5);
+  border-color: rgba(148, 163, 184, 0.7);
+}
+
+.animation-toggle-button {
+  background: rgba(139, 92, 246, 0.3);
+  border: 1px solid rgba(139, 92, 246, 0.5);
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  margin-left: 4px;
+}
+
+.animation-toggle-button:hover {
+  background: rgba(139, 92, 246, 0.5);
+  border-color: rgba(139, 92, 246, 0.7);
+}
+
+.animation-toggle-button.active {
+  background: rgba(16, 185, 129, 0.3);
+  border-color: rgba(16, 185, 129, 0.5);
+}
+
+.animation-toggle-button.active:hover {
+  background: rgba(16, 185, 129, 0.5);
+  border-color: rgba(16, 185, 129, 0.7);
+}
+
+.zoom-instructions {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.zoom-instructions p {
+  color: #aaa;
+  font-size: 12px;
+  margin: 0;
+  text-align: center;
+}
+
 .card-display {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 40px 20px 60px;  /* Added bottom padding to prevent overlap */
-  flex: 1;
+  width: 100%;
+  height: 100vh;
+  padding: 100px 20px 100px;
+  overflow: hidden;
+  cursor: default;
+  position: relative;
   animation: fadeInScale 0.4s ease-out;
+  user-select: none;
+}
+
+.card-zoom-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.1s ease-out;
+  will-change: transform;
+  user-select: none;
+  pointer-events: auto;
+  cursor: grab;
+}
+
+.card-zoom-wrapper:active {
+  cursor: grabbing;
+}
+
+.card-zoom-wrapper * {
+  pointer-events: none;
+  user-select: none;
+}
+
+.card-display .card-wrapper {
+  width: 100%;
+  max-width: 700px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-display .card-container {
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
 }
 
 @keyframes fadeInScale {
