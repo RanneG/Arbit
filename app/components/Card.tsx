@@ -18,16 +18,7 @@ function mapRarityToCalculator(cardRarity: Rarity): CalculatorRarity {
 }
 
 interface CardProps {
-  card: CardType & {
-    tradeData?: {
-      roiPercent: number
-      holdDays: number
-      notionalUSD: number
-      direction: 'LONG' | 'SHORT'
-      pair: string
-      profit?: number
-    }
-  }
+  card: CardType // CardType already includes tradeData?: TradeData
   onPress?: () => void
   size?: 'small' | 'medium' | 'large'
 }
