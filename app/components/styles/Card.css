@@ -543,6 +543,171 @@
   height: 2px;
   background: #fff;
   border-radius: 50%;
+  animation: twinkle 3s infinite alternate;
+}
+
+@keyframes twinkle {
+  0% { opacity: 0.2; }
+  100% { opacity: 0.8; }
+}
+
+/* Space-themed enhancements */
+.cosmic-card {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Nebula backgrounds by rarity */
+.nebula-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.nebula-background[data-rarity="COMMON"] {
+  background: radial-gradient(circle at 30% 30%, 
+    rgba(100, 100, 100, 0.3) 0%,
+    rgba(50, 50, 50, 0.2) 30%,
+    transparent 70%
+  );
+}
+
+.nebula-background[data-rarity="RARE"] {
+  background: radial-gradient(circle at 30% 30%, 
+    rgba(59, 130, 246, 0.4) 0%,
+    rgba(30, 64, 175, 0.3) 30%,
+    transparent 70%
+  );
+}
+
+.nebula-background[data-rarity="EPIC"] {
+  background: radial-gradient(circle at 30% 30%, 
+    rgba(139, 92, 246, 0.5) 0%,
+    rgba(109, 40, 217, 0.4) 30%,
+    transparent 70%
+  );
+  animation: nebula-pulse 4s infinite alternate;
+}
+
+.nebula-background[data-rarity="LEGENDARY"] {
+  background: radial-gradient(circle at 30% 30%, 
+    rgba(245, 158, 11, 0.6) 0%,
+    rgba(217, 119, 6, 0.5) 30%,
+    transparent 70%
+  );
+  animation: nebula-pulse 3s infinite alternate;
+}
+
+.nebula-background[data-rarity="MYTHIC"] {
+  background: radial-gradient(circle at 30% 30%, 
+    rgba(255, 0, 255, 0.6) 0%,
+    rgba(0, 255, 255, 0.5) 30%,
+    rgba(255, 255, 0, 0.4) 50%,
+    transparent 80%
+  );
+  animation: nebula-pulse 2s infinite alternate;
+}
+
+@keyframes nebula-pulse {
+  0% { opacity: 0.4; transform: scale(1); }
+  100% { opacity: 0.8; transform: scale(1.05); }
+}
+
+/* Cosmic ship name */
+.cosmic-ship-name {
+  text-shadow: 0 0 10px currentColor, 0 0 20px rgba(139, 92, 246, 0.5);
+  color: #fff;
+  font-weight: bold;
+}
+
+/* Space metrics */
+.cosmic-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.space-metric {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #ccc;
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.space-metric .metric-icon {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.space-metric .metric-label {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  opacity: 0.7;
+}
+
+.space-metric .metric-value {
+  font-weight: bold;
+  color: #fff;
+  margin-left: auto;
+}
+
+/* Mission log styling */
+.mission-log .description-text {
+  font-style: italic;
+  color: #aaa;
+  text-align: center;
+}
+
+/* Sector badge */
+.sector-badge {
+  font-family: 'Courier New', monospace;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Rarity-specific glows */
+.card-container.rarity-epic {
+  box-shadow: 0 0 30px rgba(139, 92, 246, 0.5), 0 5px 20px rgba(0, 0, 0, 0.3);
+}
+
+.card-container.rarity-legendary {
+  box-shadow: 
+    0 0 40px rgba(245, 158, 11, 0.6),
+    0 0 80px rgba(217, 119, 6, 0.3),
+    0 5px 20px rgba(0, 0, 0, 0.3);
+}
+
+.card-container.rarity-mythic {
+  box-shadow: 
+    0 0 50px rgba(255, 0, 255, 0.8),
+    0 0 100px rgba(0, 255, 255, 0.6),
+    0 0 150px rgba(255, 255, 0, 0.4),
+    0 5px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Star field enhancement */
+.cosmic-card .stars-container {
+  animation: star-field-drift 20s linear infinite;
+}
+
+@keyframes star-field-drift {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(10px, 10px); }
 }
 
 /* Large card size adjustments */

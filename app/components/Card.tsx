@@ -2,10 +2,32 @@
 
 import { useState, useEffect } from 'react'
 import { Card as CardType, Rarity } from '@/types/Card'
+import { getCosmicRank, getCosmicTradeData, type CosmicTradeData, Rarity as CalculatorRarity } from '@/lib/cardRarityCalculator'
 import './styles/Card.css'
 
+// Map Card Rarity enum (lowercase) to Calculator Rarity enum (uppercase)
+function mapRarityToCalculator(cardRarity: Rarity): CalculatorRarity {
+  const rarityMap: Record<string, CalculatorRarity> = {
+    'common': CalculatorRarity.COMMON,
+    'uncommon': CalculatorRarity.RARE, // Map uncommon to rare for calculator
+    'rare': CalculatorRarity.RARE,
+    'epic': CalculatorRarity.EPIC,
+    'legendary': CalculatorRarity.LEGENDARY,
+  }
+  return rarityMap[cardRarity.toLowerCase()] || CalculatorRarity.COMMON
+}
+
 interface CardProps {
-  card: CardType
+  card: CardType & {
+    tradeData?: {
+      roiPercent: number
+      holdDays: number
+      notionalUSD: number
+      direction: 'LONG' | 'SHORT'
+      pair: string
+      profit?: number
+    }
+  }
   onPress?: () => void
   size?: 'small' | 'medium' | 'large'
 }
@@ -112,15 +134,33 @@ export default function Card({ card, onPress, size = 'medium' }: CardProps) {
     cardStyle.maxWidth = '100%'
   }
 
+  // Get cosmic trade data if available
+  const cosmicData: CosmicTradeData | null = card.tradeData ? (() => {
+    try {
+      const rarityEnum = mapRarityToCalculator(card.rarity)
+      const profitUSD = card.tradeData.profit || Math.abs((card.tradeData.roiPercent / 100) * card.tradeData.notionalUSD)
+      return getCosmicTradeData(card.tradeData, rarityEnum, profitUSD)
+    } catch {
+      return null
+    }
+  })() : null
+
+  // Always show nebula background for cosmic-themed cards (based on rarity)
+  // Cards with tradeData get additional cosmic data, but all cards get nebula backgrounds
+  const rarityForNebula = card.rarity.toUpperCase()
+  
   const CardContent = (
-    <div className="card-container" style={cardStyle}>
+    <div className={`card-container cosmic-card rarity-${card.rarity.toLowerCase()}`} style={cardStyle}>
       <div className="card-gradient" style={gradientStyle}>
         <div className="card-border-glow"></div>
+        <div className={`nebula-background`} data-rarity={rarityForNebula}></div>
         <div className="card-content">
           <div className="rarity-badge">
             <span className="rarity-emoji">{getRarityEmoji(card.rarity)}</span>
-            <span className="rarity-text">{getRarityLabel(card.rarity)}</span>
-            <span className="rarity-number">#{getRarityNumber(card.rarity)}</span>
+            <span className="rarity-text">
+              {cosmicData ? `⭐ ${cosmicData.cosmicRank} ⭐` : getRarityLabel(card.rarity)}
+            </span>
+            {!cosmicData && <span className="rarity-number">#{getRarityNumber(card.rarity)}</span>}
           </div>
 
           <div className="image-container">
@@ -156,13 +196,17 @@ export default function Card({ card, onPress, size = 'medium' }: CardProps) {
           </div>
 
           <div className="card-info">
-            <div className="card-name">{card.name}</div>
-            <div className="card-title">{card.title}</div>
+            <div className={`card-name ${cosmicData ? 'cosmic-ship-name' : ''}`}>
+              {cosmicData ? `🚀 ${cosmicData.shipName}` : card.name}
+            </div>
+            <div className="card-title">{card.title || (cosmicData ? cosmicData.shipName : card.name)}</div>
 
-            {/* Description - Show in preview, larger in detail view */}
-            {card.description && (
-              <div className={`description-container ${size === 'large' ? 'large-description' : 'preview-description'}`}>
-                <p className={`description-text ${size === 'large' ? 'large-description-text' : ''}`}>{card.description}</p>
+            {/* Description or Mission Log - Show in preview, larger in detail view */}
+            {(cosmicData?.missionLog || card.description) && (
+              <div className={`description-container mission-log ${size === 'large' ? 'large-description' : 'preview-description'}`}>
+                <p className={`description-text ${size === 'large' ? 'large-description-text' : ''}`}>
+                  {cosmicData ? `"${cosmicData.missionLog}"` : card.description}
+                </p>
               </div>
             )}
 
@@ -188,8 +232,8 @@ export default function Card({ card, onPress, size = 'medium' }: CardProps) {
               </div>
             )}
 
-            <div className={`faction-badge ${size === 'large' ? 'large-faction' : ''}`}>
-              {card.faction.charAt(0).toUpperCase() + card.faction.slice(1)}
+            <div className={`faction-badge sector-badge ${size === 'large' ? 'large-faction' : ''}`}>
+              {cosmicData ? `**${cosmicData.sector}**` : card.faction.charAt(0).toUpperCase() + card.faction.slice(1)}
             </div>
           </div>
         </div>

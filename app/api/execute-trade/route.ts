@@ -95,12 +95,6 @@ export async function POST(request: NextRequest) {
       limitPrice = lp
     }
 
-    console.log(`Executing basket trade`)
-    console.log(`Long assets: ${longAssets.join(', ')}`)
-    console.log(`Short assets: ${shortAssets.join(', ')}`)
-    console.log(`Notional: $${notional}`)
-    if (orderType) console.log(`Order type: ${orderType}`)
-    if (limitPrice) console.log(`Limit price: $${limitPrice}`)
 
     // Execute the basket trade
     const result = await pearClient.executeBasketTrade(
@@ -111,7 +105,6 @@ export async function POST(request: NextRequest) {
       notional
     )
 
-    console.log(`Trade executed successfully. Order ID: ${result.orderId}`)
 
     const response: any = {
       success: true,

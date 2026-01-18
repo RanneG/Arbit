@@ -167,9 +167,6 @@ export async function POST(request: NextRequest) {
     // Step 7: TODO - Add card to user's collection
     // await db.users.addCard(trade.userId, mintedCard)
 
-    console.log(`✅ Trade closed and card minted: ${cardId}`)
-    console.log(`   Trade: ${trade.pair} ${trade.direction} - ${roiPercent.toFixed(2)}% ROI`)
-    console.log(`   Card: ${mintedCard.name} (${cardMetadata.rarity}) - $${cardMetadata.value}`)
 
     // Return both closed trade and card
     return NextResponse.json(

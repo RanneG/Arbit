@@ -14,6 +14,7 @@ import Link from 'next/link'
 import Card from './Card'
 import WalletConnect from './WalletConnect'
 import PortfolioChart from './PortfolioChart'
+import WormholeReveal from './WormholeReveal'
 import { Card as CardType } from '@/types/Card'
 import './styles/Portfolio.css'
 
@@ -227,6 +228,8 @@ export default function Portfolio() {
   const [walletAddress, setWalletAddress] = useState<string | null>(null)
   const [showInfoTooltip, setShowInfoTooltip] = useState(false)
   const [timeFilter, setTimeFilter] = useState<'7D' | '30D' | '90D' | 'ALL'>('30D')
+  const [revealedCard, setRevealedCard] = useState<CardType | null>(null)
+  const [showWormholeReveal, setShowWormholeReveal] = useState(false)
 
   useEffect(() => {
     const loadPortfolio = async () => {
@@ -312,15 +315,51 @@ export default function Portfolio() {
       const data = await response.json()
 
       if (response.ok && data.success) {
-        // Show success message with card details
-        alert(
-          `✅ Trade closed!\n\n` +
-          `Minted ${data.card.rarity} card: ${data.card.name}\n` +
-          `Card Value: $${data.card.value.toFixed(2)}`
-        )
+        // Map rarity to a card image based on rarity
+        const getCardImageByRarity = (rarity: string): string => {
+          const rarityMap: Record<string, string> = {
+            'MYTHIC': 'nexus-prime.jpg',
+            'LEGENDARY': 'voidweaver.jpg',
+            'EPIC': 'quantum-shift.jpg',
+            'RARE': 'nexus-helper.jpg',
+            'COMMON': 'space-sweeper.jpg',
+          }
+          const baseRarity = rarity.toUpperCase()
+          const imageName = rarityMap[baseRarity] || 'cosmic-rager.jpg'
+          return `/images/cards/${imageName}`
+        }
 
-        // Reload portfolio to show updated data
-        window.location.reload()
+        // Get asset from trade pair if available, otherwise use rarity-based default
+        let imageUrl = data.card.design?.imageUrl
+        if (!imageUrl || !imageUrl.startsWith('/images/cards/')) {
+          // Use rarity-based image as fallback
+          imageUrl = getCardImageByRarity(data.card.rarity)
+        }
+
+        // Convert API card to CardType for display
+        const cardForReveal: CardType = {
+          id: data.card.id,
+          name: data.card.name,
+          title: data.card.name,
+          rarity: data.card.rarity.toLowerCase() as any,
+          faction: 'cosmic' as any,
+          stats: {
+            longPosition: 50,
+            shortPosition: 50,
+            leverage: 50,
+            marketIQ: 50,
+          },
+          description: data.card.tradeData ? 
+            `Trade: ${data.card.tradeData.pair} ${data.card.tradeData.direction}` : 
+            'Minted from closed trade',
+          imageUrl: imageUrl,
+          marketValue: data.card.value,
+          tradeData: data.card.tradeData,
+        }
+
+        // Show wormhole reveal animation
+        setRevealedCard(cardForReveal)
+        setShowWormholeReveal(true)
       } else {
         // Show error message
         const errorMsg = data.error || 'Failed to close trade and mint card'
@@ -406,8 +445,25 @@ export default function Portfolio() {
     )
   }
 
+  const handleWormholeClose = () => {
+    setShowWormholeReveal(false)
+    setRevealedCard(null)
+    // Reload portfolio to show updated data after a short delay
+    setTimeout(() => {
+      window.location.reload()
+    }, 300)
+  }
+
   return (
     <div className="screen-container portfolio-container">
+      {/* Wormhole Reveal Modal */}
+      {revealedCard && (
+        <WormholeReveal
+          card={revealedCard}
+          isOpen={showWormholeReveal}
+          onClose={handleWormholeClose}
+        />
+      )}
       <div className="header">
         <div className="header-title-container">
           <h1 className="header-title">Portfolio</h1>

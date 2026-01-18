@@ -1,0 +1,410 @@
+/* Wormhole Reveal Animation */
+
+.wormhole-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.95);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.wormhole-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: clamp(10px, 2vh, 30px);
+  box-sizing: border-box;
+  gap: clamp(20px, 3vh, 40px);
+  min-height: 0;
+}
+
+/* Wormhole Portal Effect */
+.wormhole {
+  position: relative;
+  width: min(300px, 25vw);
+  height: min(300px, 25vw);
+  min-width: 200px;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.wormhole-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 3px solid;
+  border-top-color: rgba(139, 92, 246, 0.8);
+  border-right-color: rgba(79, 70, 229, 0.6);
+  border-bottom-color: rgba(59, 130, 246, 0.8);
+  border-left-color: rgba(139, 92, 246, 0.6);
+  animation: wormhole-spin 2s linear infinite;
+}
+
+.wormhole-ring.ring-1 {
+  width: 100%;
+  height: 100%;
+  animation-duration: 3s;
+  opacity: 1;
+}
+
+.wormhole-ring.ring-2 {
+  width: 83.33%;
+  height: 83.33%;
+  animation-duration: 2.5s;
+  animation-direction: reverse;
+  opacity: 0.8;
+}
+
+.wormhole-ring.ring-3 {
+  width: 66.67%;
+  height: 66.67%;
+  animation-duration: 2s;
+  opacity: 0.6;
+}
+
+.wormhole-core {
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  border-radius: 50%;
+  background: radial-gradient(circle, 
+    rgba(139, 92, 246, 0.9) 0%,
+    rgba(79, 70, 229, 0.7) 30%,
+    rgba(30, 27, 75, 0.5) 60%,
+    transparent 100%
+  );
+  animation: core-pulse 1.5s ease-in-out infinite alternate;
+  box-shadow: 
+    0 0 60px rgba(139, 92, 246, 0.8),
+    0 0 120px rgba(79, 70, 229, 0.6),
+    inset 0 0 60px rgba(139, 92, 246, 0.4);
+}
+
+@keyframes wormhole-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes core-pulse {
+  from { 
+    transform: scale(0.9);
+    opacity: 0.7;
+  }
+  to { 
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+
+/* Opening phase - wormhole expands */
+.wormhole-container.opening .wormhole {
+  animation: wormhole-expand 0.8s ease-out forwards;
+}
+
+@keyframes wormhole-expand {
+  from { 
+    transform: scale(0);
+    opacity: 0;
+  }
+  to { 
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Revealing phase - card emerges */
+.card-emerging {
+  position: relative;
+  z-index: 10;
+  animation: card-emerge 1.2s ease-out forwards;
+  transform-origin: center;
+  width: min(560px, 75vw, calc(100vh - 300px) * 0.714);
+  max-width: 100%;
+  max-height: calc(100vh - 250px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.card-emerging.revealing {
+  animation: card-emerge 1.2s ease-out forwards;
+}
+
+.card-emerging.complete {
+  animation: card-lock-in 0.5s ease-out forwards;
+}
+
+/* Ensure card wrapper fits within viewport */
+.card-emerging .card-wrapper {
+  max-width: 100%;
+  max-height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.card-emerging .card-container {
+  max-width: 100% !important;
+  width: 100% !important;
+  height: auto !important;
+  max-height: calc(100vh - 250px) !important;
+}
+
+/* Ensure card content fits within available space */
+.card-emerging .card-content {
+  max-height: 100%;
+  overflow: visible;
+}
+
+.card-emerging .image-container {
+  max-height: 60vh;
+  overflow: hidden;
+}
+
+.card-emerging .card-info {
+  max-height: 40vh;
+  overflow: visible;
+}
+
+@keyframes card-emerge {
+  0% {
+    transform: scale(0) rotateY(180deg);
+    opacity: 0;
+    filter: blur(20px);
+  }
+  50% {
+    transform: scale(0.8) rotateY(90deg);
+    opacity: 0.7;
+    filter: blur(10px);
+  }
+  100% {
+    transform: scale(1) rotateY(0deg);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes card-lock-in {
+  from {
+    transform: scale(1) translateY(0);
+  }
+  to {
+    transform: scale(1.02) translateY(-10px);
+  }
+}
+
+.card-emerging.complete {
+  transform: scale(1.02) translateY(-10px);
+}
+
+/* Success message */
+.reveal-success-message {
+  position: relative;
+  text-align: center;
+  animation: message-fade-in 0.5s ease-out 2s forwards;
+  opacity: 0;
+  z-index: 20;
+  flex-shrink: 0;
+  padding: 20px;
+  margin-top: auto;
+}
+
+@keyframes message-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.success-title {
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 
+    0 0 20px rgba(139, 92, 246, 0.8),
+    0 0 40px rgba(79, 70, 229, 0.6);
+  margin: 0 0 16px 0;
+  letter-spacing: 2px;
+}
+
+.success-subtitle {
+  font-size: clamp(18px, 3vw, 24px);
+  color: #aaa;
+  margin: 0 0 24px 0;
+}
+
+.close-reveal-button {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.8), rgba(79, 70, 229, 0.8));
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  padding: 16px 32px;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 
+    0 0 30px rgba(139, 92, 246, 0.6),
+    0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.close-reveal-button:hover {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 1), rgba(79, 70, 229, 1));
+  transform: translateY(-2px);
+  box-shadow: 
+    0 0 40px rgba(139, 92, 246, 0.8),
+    0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.close-reveal-button:active {
+  transform: translateY(0);
+}
+
+/* Particle effects around wormhole */
+.wormhole-container.opening::before,
+.wormhole-container.revealing::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(2px 2px at 20% 30%, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(2px 2px at 60% 70%, rgba(139, 92, 246, 0.6), transparent),
+    radial-gradient(1px 1px at 40% 50%, rgba(79, 70, 229, 0.4), transparent);
+  background-size: 200px 200px;
+  animation: particles-float 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes particles-float {
+  0%, 100% { transform: translate(0, 0); opacity: 0.5; }
+  50% { transform: translate(10px, -10px); opacity: 0.8; }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .wormhole-container {
+    gap: clamp(15px, 2vh, 25px);
+    padding: clamp(10px, 1.5vh, 20px);
+  }
+
+  .wormhole {
+    width: min(200px, 25vw);
+    height: min(200px, 25vw);
+    min-width: 120px;
+    min-height: 120px;
+  }
+
+  .card-emerging {
+    width: min(400px, 85vw, calc(100vh - 200px) * 0.714);
+    max-height: calc(100vh - 200px);
+  }
+
+  .card-emerging .image-container {
+    max-height: 50vh;
+  }
+
+  .card-emerging .card-info {
+    max-height: 35vh;
+  }
+
+  .reveal-success-message {
+    padding: 15px;
+  }
+
+  .close-reveal-button {
+    padding: 12px 24px;
+    font-size: 16px;
+  }
+}
+
+@media (max-height: 800px) {
+  .wormhole-container {
+    gap: clamp(10px, 1.5vh, 20px);
+    padding: clamp(8px, 1vh, 15px);
+  }
+
+  .wormhole {
+    width: min(180px, 20vw);
+    height: min(180px, 20vw);
+    min-width: 100px;
+    min-height: 100px;
+  }
+
+  .card-emerging {
+    width: min(450px, 75vw, calc(100vh - 180px) * 0.714);
+    max-height: calc(100vh - 180px);
+  }
+
+  .card-emerging .image-container {
+    max-height: 45vh;
+  }
+
+  .card-emerging .card-info {
+    max-height: 30vh;
+    font-size: 90%;
+  }
+
+  .reveal-success-message {
+    padding: 10px;
+  }
+
+  .success-title {
+    font-size: clamp(28px, 4vh, 40px);
+    margin-bottom: 8px;
+  }
+
+  .success-subtitle {
+    font-size: clamp(16px, 2.5vh, 20px);
+    margin-bottom: 16px;
+  }
+}
+
+@media (max-height: 600px) {
+  .card-emerging {
+    width: min(380px, 70vw, calc(100vh - 150px) * 0.714);
+    max-height: calc(100vh - 150px);
+  }
+
+  .card-emerging .image-container {
+    max-height: 40vh;
+  }
+
+  .card-emerging .card-info {
+    max-height: 25vh;
+    font-size: 85%;
+  }
+
+  .success-title {
+    font-size: clamp(24px, 3.5vh, 32px);
+  }
+
+  .success-subtitle {
+    font-size: clamp(14px, 2vh, 18px);
+  }
+}
+

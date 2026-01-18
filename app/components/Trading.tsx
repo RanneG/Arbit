@@ -343,7 +343,6 @@ export default function Trading() {
         ...(orderType === 'limit' && { limitPrice: parseFloat(limitPrice) }),
       }
 
-      console.log('Executing trade with payload:', payload)
 
       const response = await fetch('/api/execute-trade', {
         method: 'POST',

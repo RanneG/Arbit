@@ -49,7 +49,6 @@ export default function Home() {
       if (response.ok && data.success && data.card) {
         // Display the minted card with real trade orderId
         setDemoCard(data.card)
-        console.log('✅ Card minted! Trade Order ID:', data.trade.orderId)
       } else {
         // Show error message
         const errorMsg = data.error || 'Failed to mint card'
