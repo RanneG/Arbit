@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Card as CardType, Rarity } from '@/types/Card'
-import { getCosmicRank, getCosmicTradeData, type CosmicTradeData, Rarity as CalculatorRarity } from '@/lib/cardRarityCalculator'
+import { getCosmicRank, getCosmicTradeData, type CosmicTradeData, type TradeMetrics, Rarity as CalculatorRarity } from '@/lib/cardRarityCalculator'
 import './styles/Card.css'
 
 // Map Card Rarity enum (lowercase) to Calculator Rarity enum (uppercase)
