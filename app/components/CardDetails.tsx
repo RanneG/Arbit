@@ -59,7 +59,7 @@ export default function CardDetails({ card }: CardDetailsProps) {
     const returnToCenter = () => {
       const startX = positionRef.current.x
       const startY = positionRef.current.y
-      const duration = 800 // ms
+      const duration = 300 // ms - fast and snappy
       const startTime = Date.now()
       
       // Cancel any existing return animation
