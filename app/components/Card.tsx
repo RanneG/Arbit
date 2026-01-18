@@ -78,11 +78,11 @@ export default function Card({ card, onPress, size = 'medium' }: CardProps) {
   const getSizeMultiplier = (): number => {
     switch (size) {
       case 'small':
-        return 1.2  // Increased from 0.6 for better web visibility
+        return 0.9  // Optimized for better space utilization
       case 'large':
-        return 2.2  // Increased from 1.8 for better detail view
+        return 2.0  // For detail view
       default:
-        return 1.5  // Increased from 1 for medium size
+        return 1.2  // Optimized medium size for grid layout
     }
   }
 
@@ -92,9 +92,10 @@ export default function Card({ card, onPress, size = 'medium' }: CardProps) {
   }
 
   const cardStyle = {
-    width: `${350 * sizeMultiplier}px`,  // Increased base width from 280
-    height: `${490 * sizeMultiplier}px`, // Increased base height from 392
+    width: `${300 * sizeMultiplier}px`,  // Optimized base width for better grid fit
+    height: `${420 * sizeMultiplier}px`, // Optimized base height (maintains aspect ratio)
     transition: 'all 0.3s ease',
+    maxWidth: '100%',
   }
 
   const CardContent = (

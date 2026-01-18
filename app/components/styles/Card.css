@@ -1,7 +1,8 @@
 .card-wrapper {
   display: flex;
   justify-content: center;
-  margin: 16px;  /* Further increased from 12px */
+  margin: 0;  /* Removed margin to let grid gap handle spacing */
+  width: 100%;
 }
 
 .card-wrapper.clickable {

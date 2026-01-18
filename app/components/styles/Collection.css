@@ -1,19 +1,22 @@
 .screen-container {
   min-height: 100vh;
   background: linear-gradient(180deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%);
-  padding: 220px 20px 30px;  /* Increased top padding to avoid navigation clash */
+  padding: 100px 16px 20px;  /* Reduced padding to better utilize space */
+  max-width: 1600px;
+  margin: 0 auto;
 }
 
 .header {
-  padding: 30px 20px;
-  padding-top: 20px;
+  padding: 16px 0;
+  padding-top: 0;
+  margin-bottom: 16px;
 }
 
 .header-title-container {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 8px;
+  margin-bottom: 8px;
 }
 
 .header-title {
@@ -146,39 +149,39 @@
 
 .stats-container {
   display: flex;
-  gap: 20px;  /* Reduced gap */
-  margin-bottom: 24px;  /* Reduced spacing */
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
 .stat-box {
   flex: 1;
   background: rgba(255, 255, 255, 0.1);
-  border-radius: 14px;  /* Further reduced */
-  padding: 20px 16px;  /* Even smaller padding */
+  border-radius: 10px;
+  padding: 12px 10px;
   text-align: center;
   border: 1px solid rgba(255, 255, 255, 0.2);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 120px;  /* Even smaller height */
+  min-height: 80px;
 }
 
 .stats-container .stat-box .stat-value {
-  font-size: 40px !important;  /* Even smaller */
+  font-size: 28px !important;
   font-weight: bold;
   color: #fff;
-  margin-top: 6px;  /* Reduced spacing */
+  margin-top: 4px;
   text-align: center;
   line-height: 1.1;
 }
 
 .stats-container .stat-box .stat-label {
-  font-size: 18px !important;  /* Even smaller */
+  font-size: 13px !important;
   font-weight: 600;
   color: #aaa;
   text-align: center;
-  margin-bottom: 6px;  /* Reduced spacing */
+  margin-bottom: 4px;
   line-height: 1.2;
 }
 
@@ -235,70 +238,94 @@
 
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 36px;  /* Further increased from 28px */
-  padding: 36px;  /* Further increased from 28px */
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding: 16px 0;
   justify-items: center;
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .cards-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .cards-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+  }
 }
 
 @media (min-width: 768px) {
   .cards-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 40px;  /* Further increased gap for tablet */
-    padding: 40px;  /* Further increased padding for tablet */
+    gap: 24px;
   }
   
   .stats-container .stat-box .stat-value {
-    font-size: 48px !important;  /* Even smaller for tablet */
+    font-size: 32px !important;
   }
   
   .stats-container .stat-box .stat-label {
-    font-size: 20px !important;  /* Even smaller for tablet */
+    font-size: 14px !important;
   }
   
   .stat-box {
-    padding: 24px 18px;  /* Even smaller padding for tablet */
-    min-height: 140px;
+    padding: 14px 12px;
+    min-height: 90px;
+  }
+}
+
+@media (max-width: 768px) {
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
   }
 }
 
 @media (max-width: 480px) {
+  .screen-container {
+    padding: 90px 12px 16px;
+  }
+
   .stats-container .stat-box .stat-value {
-    font-size: 36px !important;  /* Even smaller for mobile */
+    font-size: 24px !important;
   }
   
   .stats-container .stat-box .stat-label {
-    font-size: 18px !important;  /* Even smaller for mobile */
+    font-size: 12px !important;
   }
   
   .stat-box {
-    padding: 18px 14px;  /* Even smaller padding for mobile */
-    min-height: 110px;
+    padding: 10px 8px;
+    min-height: 70px;
   }
   
   .wallet-label {
-    font-size: 16px;
+    font-size: 14px;
   }
   
   .wallet-address {
-    font-size: 18px;
+    font-size: 16px;
   }
   
   .empty-title {
-    font-size: 28px;
+    font-size: 24px;
   }
   
   .empty-text {
-    font-size: 20px;
+    font-size: 16px;
   }
   
   .browse-button {
-    font-size: 18px;
-    padding: 14px 28px;
+    font-size: 16px;
+    padding: 12px 24px;
   }
   
   .cards-grid {
-    gap: 32px;  /* Further increased gap for mobile */
-    padding: 32px;  /* Further increased padding for mobile */
+    gap: 12px;
+    grid-template-columns: repeat(2, 1fr);
   }
 }
