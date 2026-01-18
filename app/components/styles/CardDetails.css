@@ -1,5 +1,6 @@
 .details-screen {
-  padding-bottom: 100px;
+  padding-top: 220px;  /* Increased top padding to avoid navigation clash */
+  padding-bottom: 200px;  /* Bottom padding for action button */
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -30,7 +31,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 40px 20px;
+  padding: 40px 20px 60px;  /* Added bottom padding to prevent overlap */
   flex: 1;
   animation: fadeInScale 0.4s ease-out;
 }
@@ -161,24 +162,28 @@
 
 .action-container {
   position: fixed;
-  bottom: 70px;
+  bottom: 120px;  /* Increased from 70px to clear bottom navigation */
   left: 0;
   right: 0;
   padding: 20px;
   background: rgba(10, 10, 15, 0.95);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 999;  /* Ensure it's above other content but below navigation */
 }
 
 .action-button {
   width: 100%;
-  padding: 16px;
+  padding: 20px;  /* Increased from 16px */
   border-radius: 12px;
   border: none;
   color: #fff;
-  font-size: 16px;
+  font-size: 22px;  /* Increased from 16px */
   font-weight: bold;
   cursor: pointer;
   transition: transform 0.2s;
+  text-transform: uppercase;  /* Make text more visible */
+  letter-spacing: 1px;  /* Add letter spacing for better readability */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);  /* Add shadow for visibility */
 }
 
 .action-button:hover {
@@ -187,4 +192,45 @@
 
 .action-button:active {
   transform: scale(0.98);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .action-container {
+    bottom: 30px;  /* Reduced since navigation is at top */
+    padding: 18px;
+  }
+  
+  .details-screen {
+    padding-top: 200px;  /* Increased top padding to avoid navigation clash */
+    padding-bottom: 180px;
+  }
+  
+  .action-button {
+    padding: 19px;  /* Increased for tablet */
+    font-size: 21px;  /* Increased for tablet */
+    letter-spacing: 0.8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .action-container {
+    bottom: 30px;  /* Reduced since navigation is at top */
+    padding: 16px;
+  }
+  
+  .details-screen {
+    padding-top: 200px;  /* Increased top padding to avoid navigation clash */
+    padding-bottom: 160px;
+  }
+  
+  .card-display {
+    padding: 30px 15px 50px;  /* Reduced padding for mobile */
+  }
+  
+  .action-button {
+    padding: 18px;  /* Increased from 14px */
+    font-size: 20px;  /* Increased from 15px */
+    letter-spacing: 0.5px;  /* Slightly reduced letter spacing for mobile */
+  }
 }

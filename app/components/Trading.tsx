@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Card from './Card'
+import TradingCharts from './TradingCharts'
+import WalletConnect from './WalletConnect'
 import { Card as CardType } from '@/types/Card'
 import { mockCards } from '@/lib/mockCards'
 import './styles/Trading.css'
@@ -22,6 +24,7 @@ export default function Trading() {
   const [isTrading, setIsTrading] = useState(false)
   const [tradeResult, setTradeResult] = useState<TradeResult | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
+  const [showInfoTooltip, setShowInfoTooltip] = useState(false)
 
   useEffect(() => {
     const storedWallet = localStorage.getItem('walletAddress')
@@ -83,17 +86,39 @@ export default function Trading() {
       card.title.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
+  const handleWalletConnected = (address: string) => {
+    setWalletAddress(address || null)
+  }
+
   if (!walletAddress) {
     return (
-      <div className="screen-container">
-        <div className="empty-container">
-          <h2 className="empty-title">Connect Your Wallet</h2>
-          <p className="empty-text">
-            Please connect your wallet to start trading.
+      <div className="screen-container trading-container">
+        <div className="header">
+          <div className="header-title-container">
+            <h1 className="header-title">Trading</h1>
+            <div className="info-button-container">
+              <button
+                className="info-button"
+                onMouseEnter={() => setShowInfoTooltip(true)}
+                onMouseLeave={() => setShowInfoTooltip(false)}
+                onClick={() => setShowInfoTooltip(!showInfoTooltip)}
+                aria-label="Information about trading"
+              >
+                <span className="info-icon">i</span>
+              </button>
+              {showInfoTooltip && (
+                <div className="info-tooltip">
+                  Execute trades on trading cards through Pear Protocol. View your trading performance charts, select cards to trade, and monitor your profit & loss over time.
+                </div>
+              )}
+            </div>
+          </div>
+          <p className="header-subtitle">
+            Connect your wallet to start trading cards via Pear Protocol
           </p>
-          <button className="browse-button" onClick={() => router.push('/')}>
-            Go to Home
-          </button>
+        </div>
+        <div className="wallet-connect-section">
+          <WalletConnect onConnected={handleWalletConnected} />
         </div>
       </div>
     )
@@ -102,11 +127,32 @@ export default function Trading() {
   return (
     <div className="screen-container trading-container">
       <div className="header">
-        <h1 className="header-title">Trading</h1>
+        <div className="header-title-container">
+          <h1 className="header-title">Trading</h1>
+          <div className="info-button-container">
+            <button
+              className="info-button"
+              onMouseEnter={() => setShowInfoTooltip(true)}
+              onMouseLeave={() => setShowInfoTooltip(false)}
+              onClick={() => setShowInfoTooltip(!showInfoTooltip)}
+              aria-label="Information about trading"
+            >
+              <span className="info-icon">i</span>
+            </button>
+            {showInfoTooltip && (
+              <div className="info-tooltip">
+                Execute trades on trading cards through Pear Protocol. View your trading performance charts, select cards to trade, and monitor your profit & loss over time.
+              </div>
+            )}
+          </div>
+        </div>
         <p className="header-subtitle">
           Select a card to execute a trade via Pear Protocol
         </p>
       </div>
+
+      {/* Trading Performance Charts */}
+      <TradingCharts walletAddress={walletAddress} />
 
       {/* Search */}
       <div className="search-container">

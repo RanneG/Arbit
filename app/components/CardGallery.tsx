@@ -14,6 +14,7 @@ export default function CardGallery() {
   const [selectedRarity, setSelectedRarity] = useState<string | null>(null)
   const [selectedFaction, setSelectedFaction] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
+  const [showInfoTooltip, setShowInfoTooltip] = useState(false)
 
   useEffect(() => {
     filterCards()
@@ -75,7 +76,25 @@ export default function CardGallery() {
   return (
     <div className="screen-container">
       <div className="header">
-        <h1 className="header-title">Card Gallery</h1>
+        <div className="header-title-container">
+          <h1 className="header-title">Card Gallery</h1>
+          <div className="info-button-container">
+            <button
+              className="info-button"
+              onMouseEnter={() => setShowInfoTooltip(true)}
+              onMouseLeave={() => setShowInfoTooltip(false)}
+              onClick={() => setShowInfoTooltip(!showInfoTooltip)}
+              aria-label="Information about card gallery"
+            >
+              <span className="info-icon">i</span>
+            </button>
+            {showInfoTooltip && (
+              <div className="info-tooltip">
+                These are the possible cards obtainable in the game.
+              </div>
+            )}
+          </div>
+        </div>
         <p className="header-subtitle">
           {filteredCards.length} {filteredCards.length === 1 ? 'card' : 'cards'}
         </p>

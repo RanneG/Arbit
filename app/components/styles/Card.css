@@ -1,7 +1,7 @@
 .card-wrapper {
   display: flex;
   justify-content: center;
-  margin: 8px;
+  margin: 16px;  /* Further increased from 12px */
 }
 
 .card-wrapper.clickable {
@@ -14,7 +14,7 @@
 }
 
 .card-container {
-  border-radius: 20px;
+  border-radius: 28px;  /* Increased from 20px for thicker corners */
   overflow: hidden;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
   position: relative;
@@ -24,7 +24,7 @@
 
 .card-gradient {
   padding: 3px;
-  border-radius: 20px;
+  border-radius: 28px;  /* Increased from 20px */
   height: 100%;
   overflow: hidden;
   box-sizing: border-box;
@@ -36,7 +36,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  border-radius: 20px;
+  border-radius: 28px;  /* Increased from 20px */
   border: 2px solid rgba(255, 255, 255, 0.3);
   pointer-events: none;
 }
@@ -44,7 +44,7 @@
 .card-content {
   height: calc(100% - 6px);
   background: #0a0a0f;
-  border-radius: 18px;
+  border-radius: 26px;  /* Increased from 18px */
   overflow: hidden;
   position: relative;
   display: flex;
@@ -61,12 +61,12 @@
   top: 16px;
   right: 16px;
   background: rgba(0, 0, 0, 0.7);
-  padding: 6px 14px;  /* Increased padding */
-  border-radius: 12px;
+  padding: 8px 16px;  /* Increased padding */
+  border-radius: 16px;  /* Increased from 12px for thicker corners */
   z-index: 10;
   border: 1px solid rgba(255, 255, 255, 0.3);
   color: #fff;
-  font-size: 12px;  /* Increased from 10px */
+  font-size: 16px;  /* Increased from 12px */
   font-weight: bold;
   text-transform: uppercase;
   display: flex;
@@ -75,8 +75,13 @@
 }
 
 .rarity-emoji {
-  font-size: 16px;  /* Increased from 12px */
+  font-size: 20px;  /* Increased from 16px */
   line-height: 1;
+}
+
+.card-container[style*="420px"] .rarity-emoji,
+.card-container[style*="588px"] .rarity-emoji {
+  font-size: 22px;  /* Increased for preview cards */
 }
 
 .card-container[style*="504px"] .rarity-emoji,
@@ -88,9 +93,21 @@
 
 .rarity-text {
   color: #fff;
-  font-size: 12px;  /* Increased from 10px */
+  font-size: 16px;  /* Increased from 12px */
   font-weight: bold;
   text-transform: uppercase;
+}
+
+.card-container[style*="420px"] .rarity-badge,
+.card-container[style*="588px"] .rarity-badge {
+  font-size: 18px;  /* Increased for preview cards */
+  padding: 9px 18px;  /* Increased padding */
+  border-radius: 18px;  /* Increased for preview cards */
+}
+
+.card-container[style*="420px"] .rarity-text,
+.card-container[style*="588px"] .rarity-text {
+  font-size: 18px;  /* Increased for preview cards */
 }
 
 .card-container[style*="504px"] .rarity-text,
@@ -102,9 +119,23 @@
 
 .rarity-number {
   color: #FFD700;
-  font-size: 11px;
+  font-size: 18px;  /* Increased from 14px */
   font-weight: bold;
-  margin-left: 4px;
+  margin-left: 6px;  /* Increased from 5px */
+}
+
+.card-container[style*="420px"] .rarity-number,
+.card-container[style*="588px"] .rarity-number {
+  font-size: 20px;  /* Increased from 16px */
+  margin-left: 7px;  /* Increased from 6px */
+}
+
+.card-container[style*="504px"] .rarity-number,
+.card-container[style*="1.8"] .rarity-number,
+.card-container[style*="770px"] .rarity-number,
+.card-container[style*="2.2"] .rarity-number {
+  font-size: 24px;  /* Increased from 18px */
+  margin-left: 8px;
 }
 
 .image-container {
@@ -117,8 +148,10 @@
 }
 
 .card-container[style*="504px"] .image-container,
-.card-container[style*="1.8"] .image-container {
-  height: 52%;
+.card-container[style*="1.8"] .image-container,
+.card-container[style*="770px"] .image-container,
+.card-container[style*="2.2"] .image-container {
+  height: 48%;  /* Reduced from 52% to give more space to content */
 }
 
 .card-image {
@@ -176,7 +209,7 @@
 
 .card-info {
   flex: 1;
-  padding: 12px 16px;  /* Increased from 8px 12px */
+  padding: 16px 20px;  /* Increased from 12px 16px */
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -191,7 +224,7 @@
 .card-container[style*="1.8"] .card-info,
 .card-container[style*="770px"] .card-info,
 .card-container[style*="2.2"] .card-info {
-  padding: 20px 36px;  /* Increased from 14px 28px */
+  padding: 18px 28px;  /* Optimized padding to use space better */
   max-width: 100%;
   margin: 0;
   width: 100%;
@@ -200,9 +233,9 @@
 
 .card-name {
   color: #fff;
-  font-size: 16px;  /* Increased from 12px */
+  font-size: 22px;  /* Increased from 16px */
   font-weight: bold;
-  margin-bottom: 4px;
+  margin-bottom: 6px;  /* Increased from 4px */
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -218,13 +251,14 @@
 .card-container[style*="770px"] .card-name,
 .card-container[style*="2.2"] .card-name {
   font-size: 28px;  /* Increased from 20px */
-  padding-left: 24px;
+  padding-left: 0;  /* Removed padding to use full width */
+  margin-bottom: 4px;  /* Reduced margin */
 }
 
 .card-title {
   color: #aaa;
-  font-size: 12px;  /* Increased from 8px */
-  margin-bottom: 6px;
+  font-size: 16px;  /* Increased from 12px */
+  margin-bottom: 8px;  /* Increased from 6px */
   font-style: italic;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -240,15 +274,16 @@
 .card-container[style*="770px"] .card-title,
 .card-container[style*="2.2"] .card-title {
   font-size: 20px;  /* Increased from 15px */
-  padding-left: 24px;
+  padding-left: 0;  /* Removed padding to use full width */
+  margin-bottom: 6px;  /* Reduced margin */
 }
 
 .stats-container {
   display: grid !important;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: repeat(2, minmax(12px, auto));
-  gap: 2px 5px;
-  margin: 3px 0;
+  grid-template-rows: repeat(2, minmax(16px, auto));  /* Increased from 12px */
+  gap: 4px 8px;  /* Increased from 2px 5px */
+  margin: 6px 0;  /* Increased from 3px */
   flex-shrink: 0;
   width: 100%;
   padding: 0;
@@ -259,50 +294,79 @@
   max-width: 100%;
 }
 
+.card-container[style*="420px"] .stats-container,
+.card-container[style*="588px"] .stats-container {
+  grid-template-rows: repeat(2, minmax(20px, auto));  /* Increased for preview cards */
+  gap: 6px 10px;  /* Increased gap */
+  margin: 8px 0;  /* Increased margin */
+}
+
+.card-container[style*="420px"] .stat-row,
+.card-container[style*="588px"] .stat-row {
+  padding: 5px 6px;  /* Increased padding */
+  min-height: 24px;  /* Increased min-height */
+  gap: 8px;  /* Increased gap */
+}
+
 .stats-container.large-stats {
-  gap: 8px;
-  margin: 6px auto;
-  padding: 0 2px;
-  display: flex;
-  flex-direction: column;
-  max-width: 90%;
-  width: 90%;
-  justify-content: center;
-  align-items: stretch;
+  gap: 4px;  /* Increased gap for better spacing */
+  margin: 8px 0;  /* Reduced margin */
+  padding: 0;  /* Removed padding to align with other elements */
+  display: flex !important;  /* Override grid layout */
+  flex-direction: column;  /* Stack stats vertically */
+  max-width: 100%;  /* Use full width */
+  width: 100%;
+  justify-content: flex-start;  /* Align to top */
+  align-items: flex-start;  /* Align to left */
   box-sizing: border-box;
+  grid-template-columns: none !important;  /* Remove grid columns */
+  grid-template-rows: none !important;  /* Remove grid rows */
+  overflow: hidden;  /* Prevent overflow */
 }
 
 .stat-row {
   display: flex !important;
   justify-content: space-between;
   align-items: center;
-  padding: 2px 3px;
+  padding: 4px 5px;  /* Increased from 2px 3px */
   min-width: 0;
-  min-height: 16px;
+  min-height: 20px;  /* Increased from 16px */
   box-sizing: border-box;
   overflow: hidden;
-  gap: 4px;
+  gap: 6px;  /* Increased from 4px */
   visibility: visible;
   max-width: 100%;
 }
 
 .stats-container.large-stats .stat-row {
-  width: 100%;
-  min-width: auto;
-  max-width: 100%;
-  margin-bottom: 8px;
+  width: 100% !important;
+  min-width: auto !important;
+  max-width: 100% !important;
+  margin-bottom: 0;  /* No margin-bottom since gap handles spacing */
+  padding: 3px 0;  /* Increased padding for better spacing */
+  display: flex !important;
+  justify-content: space-between !important;  /* Labels on left, values on right */
+  align-items: center !important;
+  gap: 10px;  /* Increased gap between label and value */
+  position: relative;  /* Ensure proper positioning */
+  box-sizing: border-box;  /* Ensure padding is included in width */
+}
+
+.stats-container.large-stats .stat-row .stat-value {
+  order: 2;  /* Ensure value comes after label */
+  flex: 0 0 auto;  /* Don't shrink or grow */
 }
 
 .stat-label {
   color: #ccc;
-  font-size: 6px !important;
+  font-size: 10px !important;  /* Increased from 6px */
   font-weight: 500;
   flex-shrink: 1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 60%;
-  padding-right: 2px;
+  padding-right: 3px;  /* Increased from 2px */
   transition: font-size 0.3s ease;
   line-height: 1.2;
   display: inline-block;
@@ -310,21 +374,36 @@
   box-sizing: border-box;
 }
 
+.card-container[style*="420px"] .stat-label,
+.card-container[style*="588px"] .stat-label {
+  font-size: 12px !important;  /* Increased for preview cards */
+  padding-right: 4px;
+}
+
 .stat-label.large-stat-label {
-  font-size: 14px !important;  /* Increased from 11px */
-  max-width: 65%;
-  padding-right: 5px;
+  font-size: 16px !important;  /* Increased from 14px */
+  max-width: 60%;  /* Limit width to prevent overflow */
+  padding-left: 0 !important;  /* Align with card-name, card-title, description, faction */
+  padding-right: 0;  /* Remove padding since gap handles spacing */
+  flex-shrink: 1;  /* Allow label to shrink if needed */
+  visibility: visible !important;  /* Ensure visibility */
+  display: inline-block !important;  /* Ensure display */
+  text-align: left !important;  /* Align label to left */
+  margin-left: 0 !important;  /* Ensure no left margin */
+  overflow: hidden;  /* Prevent overflow */
+  text-overflow: ellipsis;  /* Add ellipsis if text is too long */
+  white-space: nowrap;  /* Prevent wrapping */
 }
 
 .stat-value {
   color: #fff !important;
-  font-size: 8px !important;  /* Increased from 6px */
+  font-size: 12px !important;  /* Increased from 8px */
   font-weight: bold;
   flex-shrink: 0;
-  min-width: 20px;
+  min-width: 24px;  /* Increased from 20px */
   text-align: right;
   white-space: nowrap;
-  padding-left: 4px;
+  padding-left: 5px;  /* Increased from 4px */
   transition: font-size 0.3s ease;
   line-height: 1.2;
   display: inline-block;
@@ -333,20 +412,36 @@
   box-sizing: border-box;
 }
 
+.card-container[style*="420px"] .stat-value,
+.card-container[style*="588px"] .stat-value {
+  font-size: 14px !important;  /* Increased for preview cards */
+  min-width: 28px;
+  padding-left: 6px;
+}
+
 .stat-value.large-stat-value {
-  font-size: 16px !important;  /* Increased from 12px */
-  min-width: 32px;
-  padding-left: 5px;
+  font-size: 20px !important;  /* Increased from 16px, bigger than labels */
+  min-width: 45px !important;  /* Increased min-width */
+  padding-left: 0 !important;  /* Remove left padding */
+  text-align: right !important;  /* Align value to right */
+  flex-shrink: 0 !important;  /* Prevent value from shrinking */
+  visibility: visible !important;  /* Ensure visibility */
+  opacity: 1 !important;  /* Ensure opacity */
+  display: inline-block !important;  /* Ensure display */
+  color: #fff !important;  /* Ensure white color */
+  font-weight: bold !important;  /* Ensure bold */
+  white-space: nowrap !important;  /* Prevent wrapping */
+  max-width: 40%;  /* Limit width to prevent overflow */
 }
 
 .faction-badge {
   align-self: flex-start;
   background: rgba(255, 255, 255, 0.1);
-  padding: 5px 10px;  /* Increased padding */
-  border-radius: 6px;
-  margin-top: 6px;
+  padding: 6px 12px;  /* Increased padding */
+  border-radius: 12px;  /* Increased from 8px for thicker corners */
+  margin-top: 8px;  /* Increased from 6px */
   color: #fff;
-  font-size: 11px;  /* Increased from 8px */
+  font-size: 14px;  /* Increased from 11px */
   font-weight: 600;
   flex-shrink: 0;
   transition: all 0.3s ease;
@@ -357,6 +452,7 @@
   padding: 6px 14px;
   margin-top: 8px;
   font-size: 16px;  /* Increased from 12px */
+  border-radius: 14px;  /* Increased for large cards */
 }
 
 .card-container[style*="504px"] .faction-badge,
@@ -364,9 +460,10 @@
 .card-container[style*="770px"] .faction-badge,
 .card-container[style*="2.2"] .faction-badge {
   padding: 8px 16px;
-  margin-top: 10px;
-  margin-left: 24px;
+  margin-top: 6px;  /* Reduced from 10px */
+  margin-left: 0;  /* Removed left margin to use full width */
   font-size: 16px;  /* Increased from 12px */
+  border-radius: 14px;  /* Increased for large cards */
 }
 
 .description-container {
@@ -374,7 +471,7 @@
   margin-bottom: 4px;
   padding: 4px 8px;
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 6px;
+  border-radius: 10px;  /* Increased from 6px for thicker corners */
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-sizing: border-box;
   overflow: hidden;
@@ -382,27 +479,34 @@
 }
 
 .description-container.preview-description {
-  margin-top: 3px;
-  margin-bottom: 3px;
-  padding: 4px 6px;
+  margin-top: 6px;  /* Increased from 3px */
+  margin-bottom: 6px;  /* Increased from 3px */
+  padding: 6px 10px;  /* Increased from 4px 6px */
   max-width: 100%;
 }
 
+.card-container[style*="420px"] .description-text,
+.card-container[style*="588px"] .description-text {
+  font-size: 15px;  /* Increased for preview cards */
+  line-height: 21px;  /* Increased line height */
+}
+
 .description-container.large-description {
-  margin-top: 10px;
-  margin-bottom: 8px;
-  padding: 10px 28px;  /* Increased padding */
-  max-width: 95%;
-  width: fit-content;
-  margin-left: auto;
-  margin-right: auto;
+  margin-top: 8px;  /* Increased for better spacing */
+  margin-bottom: 8px;  /* Increased for better spacing */
+  padding: 12px 20px;  /* Increased padding for larger text */
+  border-radius: 14px;  /* Increased for large cards */
+  max-width: 100%;  /* Use full width */
+  width: 100%;
+  margin-left: 0;  /* Removed auto margins */
+  margin-right: 0;
   box-sizing: border-box;
 }
 
 .description-text {
   color: #ccc;
-  font-size: 11px;  /* Increased from 8px */
-  line-height: 15px;  /* Increased from 11px */
+  font-size: 14px;  /* Increased from 11px */
+  line-height: 20px;  /* Increased from 15px */
   text-align: left;
   margin: 0;
   padding: 0;
@@ -414,10 +518,11 @@
 }
 
 .description-text.large-description-text {
-  font-size: 18px;  /* Increased from 15px */
-  line-height: 24px;  /* Increased from 19px */
+  font-size: 22px;  /* Increased from 18px */
+  line-height: 32px;  /* Increased line height for better readability */
   text-align: left;
   -webkit-line-clamp: unset;
+  margin: 0;  /* Remove default margins */
 }
 
 .stars-container {
@@ -440,39 +545,60 @@
 /* Large card size adjustments */
 .card-container[style*="420px"] .image-container,
 .card-container[style*="588px"] .image-container {
-  height: 62%;
+  height: 60%;  /* Slightly reduced to make room for larger text */
 }
 
 .card-container[style*="420px"] .card-info,
 .card-container[style*="588px"] .card-info {
-  padding: 12px 14px;
+  padding: 16px 18px;  /* Increased from 12px 14px */
 }
 
 .card-container[style*="420px"] .card-name,
 .card-container[style*="588px"] .card-name {
-  font-size: 16px;
+  font-size: 24px;  /* Increased from 16px */
+  margin-bottom: 8px;  /* Increased spacing */
 }
 
 .card-container[style*="420px"] .card-title,
 .card-container[style*="588px"] .card-title {
-  font-size: 11px;
+  font-size: 18px;  /* Increased from 11px */
+  margin-bottom: 10px;  /* Increased spacing */
 }
 
 /* Large cards only - don't apply to preview cards */
 .card-container[style*="420px"] .stat-label.large-stat-label,
 .card-container[style*="588px"] .stat-label.large-stat-label {
-  font-size: 10px !important;
+  font-size: 12px !important;  /* Increased from 10px */
   transform: scale(1);
 }
 
 .card-container[style*="420px"] .stat-value.large-stat-value,
 .card-container[style*="588px"] .stat-value.large-stat-value {
-  font-size: 12px !important;
+  font-size: 14px !important;  /* Increased from 12px */
   transform: scale(1);
+}
+
+/* Ensure stat values are visible for large cards (504px and 770px) */
+.card-container[style*="504px"] .stat-value.large-stat-value,
+.card-container[style*="1.8"] .stat-value.large-stat-value,
+.card-container[style*="770px"] .stat-value.large-stat-value,
+.card-container[style*="2.2"] .stat-value.large-stat-value {
+  font-size: 20px !important;  /* Increased from 16px */
+  color: #fff !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: inline-block !important;
+  font-weight: bold !important;
+  text-align: right !important;
+  white-space: nowrap !important;
+  min-width: 45px !important;  /* Increased from 40px */
+  max-width: 40% !important;  /* Limit width to prevent overflow */
 }
 
 .card-container[style*="420px"] .faction-badge,
 .card-container[style*="588px"] .faction-badge {
-  font-size: 9px;
-  padding: 3px 6px;
+  font-size: 13px;  /* Increased from 9px */
+  padding: 5px 10px;  /* Increased from 3px 6px */
+  margin-top: 8px;  /* Increased spacing */
+  border-radius: 10px;  /* Increased for preview cards */
 }

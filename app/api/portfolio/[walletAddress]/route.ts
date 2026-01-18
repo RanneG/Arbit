@@ -45,6 +45,19 @@ export async function GET(
       },
     ]
 
+    // Calculate holdings breakdown
+    const byRarity: Record<string, number> = {}
+    const byFaction: Record<string, number> = {}
+    
+    userCards.forEach(card => {
+      byRarity[card.rarity] = (byRarity[card.rarity] || 0) + 1
+      byFaction[card.faction] = (byFaction[card.faction] || 0) + 1
+    })
+    
+    const topCards = [...userCards]
+      .sort((a, b) => (b.marketValue || 0) - (a.marketValue || 0))
+      .slice(0, 5)
+
     const portfolio = {
       walletAddress,
       totalCards: userCards.length,
@@ -55,6 +68,11 @@ export async function GET(
         totalTrades: 12,
         winRate: 75,
         totalProfit: 5000,
+      },
+      holdings: {
+        byRarity,
+        byFaction,
+        topCards,
       },
     }
 

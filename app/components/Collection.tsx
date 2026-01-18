@@ -13,6 +13,7 @@ export default function Collection() {
   const [loading, setLoading] = useState(true)
   const [copied, setCopied] = useState(false)
   const [walletAddress, setWalletAddress] = useState<string | null>(null)
+  const [showInfoTooltip, setShowInfoTooltip] = useState(false)
 
   const copyWalletAddress = async () => {
     if (collection) {
@@ -114,6 +115,25 @@ export default function Collection() {
   return (
     <div className="screen-container">
       <div className="header">
+        <div className="header-title-container">
+          <h1 className="header-title">Collection</h1>
+          <div className="info-button-container">
+            <button
+              className="info-button"
+              onMouseEnter={() => setShowInfoTooltip(true)}
+              onMouseLeave={() => setShowInfoTooltip(false)}
+              onClick={() => setShowInfoTooltip(!showInfoTooltip)}
+              aria-label="Information about collection"
+            >
+              <span className="info-icon">i</span>
+            </button>
+            {showInfoTooltip && (
+              <div className="info-tooltip">
+                View all the trading cards you own. See your total cards, collection value, and browse through your personal card collection.
+              </div>
+            )}
+          </div>
+        </div>
         <div className="stats-container">
           <div className="stat-box">
             <div className="stat-label">Total Cards</div>

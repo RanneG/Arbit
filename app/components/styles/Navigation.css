@@ -1,17 +1,17 @@
-.bottom-nav {
+.top-nav {
   position: fixed;
-  bottom: 0;
+  top: 0;
   left: 0;
   right: 0;
   background: rgba(10, 10, 15, 0.95);
   backdrop-filter: blur(10px);
-  border-top: 2px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 3px solid rgba(255, 255, 255, 0.15);  /* Changed from border-top */
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding: 12px 0;  /* Reduced slightly to fit 5 tabs */
+  padding: 16px 0;  /* Increased from 10px */
   z-index: 1000;
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);  /* Changed shadow direction */
   overflow-x: auto;  /* Allow horizontal scroll on small screens */
 }
 
@@ -20,19 +20,19 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 10px 16px;  /* Adjusted for 5 tabs */
+  padding: 12px 16px;  /* Increased from 8px 12px */
   text-decoration: none;
   color: #aaa;
   transition: all 0.2s;
-  border-radius: 12px;
-  min-width: 70px;  /* Adjusted for 5 tabs */
+  border-radius: 14px;  /* Increased from 12px */
+  min-width: 80px;  /* Increased from 60px */
   flex-shrink: 0;  /* Prevent shrinking */
 }
 
 .nav-item:hover {
   color: #fff;
   background: rgba(255, 255, 255, 0.1);  /* Increased hover opacity */
-  transform: translateY(-2px);
+  transform: translateY(2px);  /* Changed direction for top nav */
 }
 
 .nav-item.active {
@@ -41,31 +41,50 @@
 }
 
 .nav-icon {
-  font-size: 32px;  /* Increased from 24px */
-  margin-bottom: 6px;  /* Increased from 4px */
+  font-size: 40px;  /* Increased from 32px */
+  margin-bottom: 8px;  /* Increased from 6px */
 }
 
 .nav-label {
-  font-size: 13px;  /* Increased from 10px */
+  font-size: 18px;  /* Increased from 13px */
   font-weight: 600;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.5px;  /* Increased from 0.3px */
+}
+
+@media (max-width: 768px) {
+  .nav-icon {
+    font-size: 36px;  /* Slightly smaller for tablet */
+  }
+  
+  .nav-label {
+    font-size: 16px;
+  }
+  
+  .nav-item {
+    padding: 10px 14px;
+    min-width: 70px;
+  }
+  
+  .top-nav {
+    padding: 14px 0;
+  }
 }
 
 @media (max-width: 480px) {
   .nav-icon {
-    font-size: 24px;  /* Slightly smaller for 5 tabs */
+    font-size: 32px;  /* Increased from 22px for better visibility */
   }
   
   .nav-label {
-    font-size: 10px;  /* Slightly smaller for 5 tabs */
+    font-size: 14px;  /* Increased from 9px */
   }
   
   .nav-item {
-    padding: 8px 12px;
-    min-width: 60px;
+    padding: 8px 12px;  /* Increased from 6px 8px */
+    min-width: 60px;  /* Increased from 50px */
   }
   
-  .bottom-nav {
-    padding: 10px 0;
+  .top-nav {
+    padding: 12px 0;  /* Increased from 8px */
   }
 }

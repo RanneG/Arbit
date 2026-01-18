@@ -1,12 +1,15 @@
 .wallet-connect-container {
   width: 100%;
-  margin: 20px 0;
+  margin: 30px 0;  /* Increased from 20px */
+  max-width: 100%;  /* Full width for all pages */
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .wallet-status {
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
-  padding: 20px;
+  border-radius: 20px;
+  padding: 28px;
   border: 2px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
 }
@@ -41,7 +44,7 @@
 }
 
 .status-text {
-  font-size: 18px;
+  font-size: 24px;  /* Increased from 18px */
   font-weight: 600;
   color: #fff;
 }
@@ -54,21 +57,21 @@
 }
 
 .wallet-address {
-  font-size: 16px;
+  font-size: 20px;  /* Increased from 16px */
   color: #ccc;
   font-family: 'Courier New', monospace;
   background: rgba(0, 0, 0, 0.3);
-  padding: 8px 16px;
-  border-radius: 8px;
+  padding: 12px 20px;  /* Increased padding */
+  border-radius: 10px;
   flex: 1;
 }
 
 .connect-button,
 .disconnect-button {
-  padding: 12px 24px;
-  border-radius: 12px;
+  padding: 16px 32px;  /* Increased from 12px 24px */
+  border-radius: 14px;
   border: none;
-  font-size: 16px;
+  font-size: 20px;  /* Increased from 16px */
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
@@ -113,7 +116,7 @@
 }
 
 .modal-header h3 {
-  font-size: 24px;
+  font-size: 32px;  /* Increased from 24px */
   font-weight: bold;
   color: #fff;
   margin: 0;
