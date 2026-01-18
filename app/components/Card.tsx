@@ -130,7 +130,15 @@ export default function Card({ card, onPress, size = 'medium' }: CardProps) {
     try {
       const rarityEnum = mapRarityToCalculator(card.rarity)
       const profitUSD = card.tradeData.profit || Math.abs((card.tradeData.roiPercent / 100) * (card.tradeData.notionalUSD || 0))
-      return getCosmicTradeData(card.tradeData, rarityEnum, profitUSD)
+      // Convert TradeData to TradeMetrics (with required notionalUSD)
+      const tradeMetrics: TradeMetrics = {
+        pair: card.tradeData.pair,
+        direction: card.tradeData.direction,
+        roiPercent: card.tradeData.roiPercent,
+        holdDays: card.tradeData.holdDays,
+        notionalUSD: card.tradeData.notionalUSD || 0,
+      }
+      return getCosmicTradeData(tradeMetrics, rarityEnum, profitUSD)
     } catch {
       return null
     }
