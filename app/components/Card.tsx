@@ -129,7 +129,7 @@ export default function Card({ card, onPress, size = 'medium' }: CardProps) {
   const cosmicData: CosmicTradeData | null = card.tradeData ? (() => {
     try {
       const rarityEnum = mapRarityToCalculator(card.rarity)
-      const profitUSD = card.tradeData.profit || Math.abs((card.tradeData.roiPercent / 100) * card.tradeData.notionalUSD)
+      const profitUSD = card.tradeData.profit || Math.abs((card.tradeData.roiPercent / 100) * (card.tradeData.notionalUSD || 0))
       return getCosmicTradeData(card.tradeData, rarityEnum, profitUSD)
     } catch {
       return null
