@@ -1,6 +1,6 @@
 /**
- * Trading Component Styles
- * Pear Garden-style trading interface: https://app.pear.garden/trade/hl/HYPE-ETH
+ * Trade Builder Styles
+ * Inspired by Pear Garden's trading interface: https://app.pear.garden/trade/hl/HYPE-ETH
  * 
  * Layout:
  * - Left: Market pairs list
@@ -8,55 +8,45 @@
  * - Right: Trade builder controls
  */
 
-.trading-container {
-  padding-top: 100px;
-  padding-bottom: 20px;
-  position: relative;
+.trade-builder-container {
   min-height: 100vh;
+  padding: 120px 20px 100px;
+  background: linear-gradient(to bottom, #0f172a, #1e293b);
+  color: #fff;
 }
 
-.header {
-  margin-bottom: 16px;
-  margin-top: 0;
-  padding-top: 0;
+.trade-builder-header {
+  max-width: 1400px;
+  margin: 0 auto 32px;
   text-align: center;
 }
 
-.header-title-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 4px;
-}
-
-.header-title {
-  font-size: 28px;
+.trade-builder-title {
+  font-size: 42px;
   font-weight: bold;
+  margin: 0 0 8px;
   color: #fff;
-  margin: 0;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.header-subtitle {
-  font-size: 14px;
+.trade-builder-subtitle {
+  font-size: 18px;
   color: #94a3b8;
   margin: 0;
 }
 
-.wallet-banner {
+.wallet-warning {
   max-width: 1400px;
-  margin: 0 auto 12px;
-  padding: 8px 16px;
+  margin: 0 auto 24px;
+  padding: 12px 20px;
   background: rgba(251, 146, 60, 0.15);
   border: 1px solid rgba(251, 146, 60, 0.4);
-  border-radius: 6px;
+  border-radius: 8px;
   color: #fbbf24;
   text-align: center;
-}
-
-.wallet-banner-content p {
-  margin: 0;
-  font-size: 13px;
 }
 
 .trade-error {
@@ -86,11 +76,10 @@
   max-width: 1400px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 260px 1fr 340px;
-  gap: 12px;
-  height: calc(100vh - 200px);
+  grid-template-columns: 280px 1fr 380px;
+  gap: 20px;
+  height: calc(100vh - 300px);
   min-height: 600px;
-  max-height: 850px;
 }
 
 /* Left: Market Pairs Panel */
@@ -106,73 +95,36 @@
   background: rgba(30, 41, 59, 0.6);
   border: 1px solid rgba(148, 163, 184, 0.2);
   border-radius: 12px;
-  padding: 12px;
+  padding: 20px;
   overflow: hidden;
-  min-height: 0;
 }
 
 .chart-header {
-  margin-bottom: 8px;
-  flex-shrink: 0;
-}
-
-.time-period-selector {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 8px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
-}
-
-.time-period-button {
-  padding: 5px 12px;
-  background: rgba(15, 23, 42, 0.8);
-  border: 1px solid rgba(148, 163, 184, 0.3);
-  border-radius: 6px;
-  color: #94a3b8;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.time-period-button:hover {
-  background: rgba(15, 23, 42, 1);
-  border-color: #3b82f6;
-  color: #fff;
-}
-
-.time-period-button.active {
-  background: #3b82f6;
-  border-color: #3b82f6;
-  color: white;
+  margin-bottom: 20px;
 }
 
 .pair-display {
-  margin-bottom: 6px;
+  margin-bottom: 16px;
 }
 
 .current-pair {
-  font-size: 18px;
+  font-size: 28px;
   font-weight: 600;
-  margin: 0 0 2px;
+  margin: 0 0 8px;
   color: #fff;
-  line-height: 1.2;
 }
 
 .pair-price-large {
-  font-size: 22px;
+  font-size: 36px;
   font-weight: bold;
   color: #fff;
-  margin: 2px 0;
-  line-height: 1.2;
+  margin: 8px 0;
 }
 
 .pair-change-large {
-  font-size: 14px;
+  font-size: 20px;
   font-weight: 600;
-  margin: 2px 0;
-  line-height: 1.2;
+  margin: 8px 0;
 }
 
 .pair-change-large.positive {
@@ -185,40 +137,34 @@
 
 .pair-stats {
   display: flex;
-  gap: 12px;
-  margin-top: 8px;
-  padding-top: 8px;
+  gap: 24px;
+  margin-top: 16px;
+  padding-top: 16px;
   border-top: 1px solid rgba(148, 163, 184, 0.2);
-  flex-wrap: wrap;
 }
 
 .stat-item {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 4px;
 }
 
 .stat-label {
-  font-size: 10px;
+  font-size: 12px;
   color: #94a3b8;
-  line-height: 1.2;
 }
 
 .stat-value {
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 600;
   color: #fff;
-  line-height: 1.2;
 }
 
 /* Chart Container */
 .chart-container {
   flex: 1;
   overflow: hidden;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  padding: 0;
+  min-height: 400px;
 }
 
 .chart-loading,
@@ -274,23 +220,20 @@
 .trade-builder-sidebar {
   overflow-y: auto;
   height: 100%;
-  min-height: 0;
 }
 
 .trade-builder-content {
   background: rgba(30, 41, 59, 0.6);
   border: 1px solid rgba(148, 163, 184, 0.2);
   border-radius: 12px;
-  padding: 12px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  height: fit-content;
-  min-height: 100%;
+  gap: 20px;
 }
 
 .basket-section {
-  padding-bottom: 12px;
+  padding-bottom: 20px;
   border-bottom: 1px solid rgba(148, 163, 184, 0.2);
 }
 
@@ -299,11 +242,11 @@
 }
 
 .basket-header {
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .basket-title {
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 600;
   margin: 0;
   color: #fff;

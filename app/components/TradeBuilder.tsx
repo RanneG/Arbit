@@ -1,25 +1,24 @@
 'use client'
 
 /**
- * Trading Component
- * Pear Garden-style trading interface for live market data and pair/basket trading
- * Inspired by: https://app.pear.garden/trade/hl/HYPE-ETH
+ * Pear Protocol Trade Builder Component
  * 
- * Features:
- * - Live market pairs list
- * - Price charts and pair visualization
- * - Long/Short asset selectors with custom basket support
- * - Market and Limit order types
- * - Trade execution via Pear Protocol API
+ * Hackathon-friendly clone of Pear Garden's core trading interface (https://app.pear.garden/trade/hl/HYPE-ETH)
+ * Showcases the versatility of the Pear Protocol API by allowing users to construct and execute
+ * custom pair/basket trades with our UI and backend integration.
+ * 
+ * Layout inspired by Pear Garden:
+ * - Left: Market pairs list with live data
+ * - Center: Price chart and pair visualization
+ * - Right/Bottom: Trade builder with Long/Short inputs
  */
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import MarketPairs from './MarketPairs'
-import LiveChart, { TimePeriod } from './LiveChart'
-import './styles/Trading.css'
+import './styles/TradeBuilder.css'
 
-// Hardcoded list of major tokens available on Pear Protocol
+// Hardcoded list of major tokens relevant to Hyperliquid
 const AVAILABLE_TOKENS = [
   'HYPE',
   'ETH',
@@ -50,7 +49,7 @@ interface MarketTicker {
   low24h: number
 }
 
-export default function Trading() {
+export default function TradeBuilder() {
   const router = useRouter()
   const [walletAddress, setWalletAddress] = useState<string | null>(null)
   
@@ -67,8 +66,6 @@ export default function Trading() {
   const [selectedPair, setSelectedPair] = useState<string | null>(null)
   const [pairTicker, setPairTicker] = useState<MarketTicker | null>(null)
   const [loadingTicker, setLoadingTicker] = useState(false)
-  const [availablePairs, setAvailablePairs] = useState<string[]>([])
-  const [timePeriod, setTimePeriod] = useState<TimePeriod>('15m')
   
   // Trade execution state
   const [isExecuting, setIsExecuting] = useState(false)
@@ -83,34 +80,12 @@ export default function Trading() {
     setWalletAddress(storedWallet || null)
   }, [])
 
-  // Load first market pair by default
-  useEffect(() => {
-    const loadFirstPair = async () => {
-      try {
-        const response = await fetch('/api/market/pairs')
-        if (response.ok) {
-          const pairs: any[] = await response.json()
-          if (pairs.length > 0 && !selectedPair) {
-            const firstPair = pairs[0].symbol
-            setAvailablePairs(pairs.map(p => p.symbol))
-            // Set pair directly without triggering basket update on initial load
-            setSelectedPair(firstPair)
-            fetchTicker(firstPair)
-          }
-        }
-      } catch (err) {
-        console.error('Failed to load first pair:', err)
-      }
-    }
-    loadFirstPair()
-  }, [])
-
   // Fetch ticker when pair is selected
   useEffect(() => {
     if (selectedPair) {
       fetchTicker(selectedPair)
-      // Refresh ticker every 3 seconds for live updates
-      const interval = setInterval(() => fetchTicker(selectedPair), 3000)
+      // Refresh ticker every 5 seconds
+      const interval = setInterval(() => fetchTicker(selectedPair), 5000)
       return () => clearInterval(interval)
     }
   }, [selectedPair])
@@ -353,21 +328,17 @@ export default function Trading() {
   const estimatedFees = notional * 0.001
 
   return (
-    <div className="screen-container trading-container">
-      <div className="header">
-        <div className="header-title-container">
-          <h1 className="header-title">Trading</h1>
-        </div>
-        <p className="header-subtitle">
-          Live market data and custom pair/basket trades via Pear Protocol
+    <div className="trade-builder-container">
+      <div className="trade-builder-header">
+        <h1 className="trade-builder-title">Pear Protocol Trading</h1>
+        <p className="trade-builder-subtitle">
+          Live market data and custom pair/basket trades
         </p>
       </div>
 
       {!walletAddress && (
-        <div className="wallet-banner">
-          <div className="wallet-banner-content">
-            <p>Connect your wallet to execute trades</p>
-          </div>
+        <div className="wallet-warning">
+          <p>⚠️ Connect your wallet to execute trades</p>
         </div>
       )}
 
@@ -419,37 +390,35 @@ export default function Trading() {
             )}
           </div>
 
-          {/* Time Period Selector */}
-          <div className="time-period-selector">
-            <button
-              className={`time-period-button ${timePeriod === '15m' ? 'active' : ''}`}
-              onClick={() => setTimePeriod('15m')}
-            >
-              15m
-            </button>
-            <button
-              className={`time-period-button ${timePeriod === '1h' ? 'active' : ''}`}
-              onClick={() => setTimePeriod('1h')}
-            >
-              1h
-            </button>
-            <button
-              className={`time-period-button ${timePeriod === '1D' ? 'active' : ''}`}
-              onClick={() => setTimePeriod('1D')}
-            >
-              1D
-            </button>
-          </div>
-
-          {/* Live Chart */}
+          {/* Chart Placeholder (for hackathon - can be enhanced with actual charting library) */}
           <div className="chart-container">
-            {pairTicker ? (
-              <LiveChart 
-                price={pairTicker.price} 
-                pair={pairTicker.pair} 
-                isLoading={loadingTicker}
-                timePeriod={timePeriod}
-              />
+            {loadingTicker ? (
+              <div className="chart-loading">Loading chart data...</div>
+            ) : pairTicker ? (
+              <div className="chart-visualization">
+                {/* Mock chart area - in production, integrate with charting library like TradingView or Chart.js */}
+                <div className="chart-placeholder">
+                  <div className="chart-line">
+                    <svg width="100%" height="200" viewBox="0 0 800 200" preserveAspectRatio="none">
+                      {/* Mock price line */}
+                      <polyline
+                        points="0,150 100,140 200,130 300,145 400,135 500,120 600,110 700,105 800,100"
+                        fill="none"
+                        stroke="#3b82f6"
+                        strokeWidth="2"
+                      />
+                      {/* Grid lines */}
+                      {[0, 50, 100, 150, 200].map((y) => (
+                        <line key={y} x1="0" y1={y} x2="800" y2={y} stroke="rgba(148,163,184,0.2)" strokeWidth="1" />
+                      ))}
+                    </svg>
+                  </div>
+                  <div className="chart-legend">
+                    <span>Price Chart: {pairTicker.pair}</span>
+                    <span className="chart-note">Mock visualization - Integrate TradingView or Chart.js for live data</span>
+                  </div>
+                </div>
+              </div>
             ) : (
               <div className="chart-empty">
                 <p>Select a trading pair from the market list to view price chart and data</p>

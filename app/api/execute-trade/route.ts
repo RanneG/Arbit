@@ -5,50 +5,102 @@ import { characters } from '@/lib/characters'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { characterId } = body
+    
+    // Support both formats: characterId (legacy) and direct basket trade (new Trade Builder)
+    let longAssets: string[]
+    let shortAssets: string[]
+    let notional: number
+    let orderType: string | undefined
+    let limitPrice: number | undefined
 
-    // Validate characterId
-    if (!characterId) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'characterId is required',
-        },
-        { status: 400 }
-      )
+    if (body.characterId) {
+      // Legacy format: character-based trading
+      const { characterId } = body
+
+      // Find the character
+      const character = characters.find((c) => c.id === characterId)
+
+      if (!character) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: `Character with id "${characterId}" not found`,
+          },
+          { status: 404 }
+        )
+      }
+
+      // Extract coin symbols from basket (long side)
+      // Remove /USD, /USDC suffixes and convert to coin names
+      longAssets = character.basket.map((pair) => {
+        // Extract coin name from symbol (e.g., 'AI/USD' -> 'AI')
+        return pair.symbol.split('/')[0].trim()
+      })
+
+      // For now, try long-only trades to simplify and avoid 500 errors
+      shortAssets = [] // Empty for long-only trades
+      notional = 10 // Fixed notional for character trades
+    } else {
+      // New format: Direct basket trade from Trade Builder
+      const { long, short, weightsLong, weightsShort, notional: notionalValue, orderType: ot, limitPrice: lp } = body
+
+      // Validate required fields
+      if (!long || !Array.isArray(long) || long.length === 0) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'Long basket is required and must be a non-empty array',
+          },
+          { status: 400 }
+        )
+      }
+
+      if (!notionalValue || notionalValue <= 0) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'Notional value is required and must be greater than 0',
+          },
+          { status: 400 }
+        )
+      }
+
+      // Validate weights if provided
+      if (weightsLong && (weightsLong.length !== long.length || Math.abs(weightsLong.reduce((sum: number, w: number) => sum + w, 0) - 1.0) > 0.01)) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'Long weights must match asset count and sum to 1.0',
+          },
+          { status: 400 }
+        )
+      }
+
+      if (short && short.length > 0 && weightsShort) {
+        if (weightsShort.length !== short.length || Math.abs(weightsShort.reduce((sum: number, w: number) => sum + w, 0) - 1.0) > 0.01) {
+          return NextResponse.json(
+            {
+              success: false,
+              error: 'Short weights must match asset count and sum to 1.0',
+            },
+            { status: 400 }
+          )
+        }
+      }
+
+      longAssets = long
+      shortAssets = short || []
+      notional = notionalValue
+      orderType = ot || 'market'
+      limitPrice = lp
     }
 
-    // Find the character
-    const character = characters.find((c) => c.id === characterId)
-
-    if (!character) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: `Character with id "${characterId}" not found`,
-        },
-        { status: 404 }
-      )
-    }
-
-    // Extract coin symbols from basket (long side)
-    // Remove /USD, /USDC suffixes and convert to coin names
-    const longAssets = character.basket.map((pair) => {
-      // Extract coin name from symbol (e.g., 'AI/USD' -> 'AI')
-      return pair.symbol.split('/')[0].trim()
-    })
-
-    // For now, try long-only trades to simplify and avoid 500 errors
-    // Short assets can be added later once agent wallet is properly set up
-    const shortAssets: string[] = [] // Empty for long-only trades
-
-    // Set fixed notional to $10 as specified
-    const notional = 10
-
-    console.log(`Executing basket trade for character: ${character.name}`)
+    console.log(`Executing basket trade`)
     console.log(`Long assets: ${longAssets.join(', ')}`)
     console.log(`Short assets: ${shortAssets.join(', ')}`)
     console.log(`Notional: $${notional}`)
+    if (orderType) console.log(`Order type: ${orderType}`)
+    if (limitPrice) console.log(`Limit price: $${limitPrice}`)
 
     // Execute the basket trade
     const result = await pearClient.executeBasketTrade(
@@ -61,23 +113,31 @@ export async function POST(request: NextRequest) {
 
     console.log(`Trade executed successfully. Order ID: ${result.orderId}`)
 
-    return NextResponse.json(
-      {
-        success: true,
-        orderId: result.orderId,
-        status: result.status,
-        message: `Trade executed for ${character.name}`,
-        character: {
-          id: character.id,
-          name: character.name,
-        },
-        basket: {
-          long: longAssets,
-          short: shortAssets,
-        },
+    const response: any = {
+      success: true,
+      orderId: result.orderId,
+      status: result.status,
+      basket: {
+        long: longAssets,
+        short: shortAssets,
       },
-      { status: 200 }
-    )
+    }
+
+    // Include character info if this was a character-based trade
+    if (body.characterId) {
+      const character = characters.find((c) => c.id === body.characterId)
+      response.message = `Trade executed for ${character?.name || 'character'}`
+      response.character = {
+        id: character?.id,
+        name: character?.name,
+      }
+    } else {
+      response.message = 'Trade executed successfully'
+      response.orderType = orderType
+      if (limitPrice) response.limitPrice = limitPrice
+    }
+
+    return NextResponse.json(response, { status: 200 })
   } catch (error) {
     // Log error but don't expose internal details
     console.error('Error executing trade:', error)
