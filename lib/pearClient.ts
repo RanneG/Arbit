@@ -360,9 +360,9 @@ export class PearClient {
         console.warn('   3. Approve the builder code (0xA47D4d99191db54A4829cdf3de2417E527c3b042)')
       } else {
         console.log('Agent wallet details:', JSON.stringify(agentWallet, null, 2))
-        const status = agentWallet.status || agentWallet.isApproved ? 'APPROVED' : 'UNKNOWN'
+        const status = (agentWallet.status || (agentWallet.isApproved ? 'APPROVED' : 'UNKNOWN')) as string
         console.log(`Agent wallet status: ${status}`)
-        if (status !== 'ACTIVE' && status !== 'APPROVED' && !agentWallet.isApproved) {
+        if (status !== 'APPROVED' && !agentWallet.isApproved) {
           console.warn(`⚠️ Agent wallet may not be approved. Status: ${status}`)
         }
       }
