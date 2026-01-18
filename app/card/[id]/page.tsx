@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import CardDetails from '@/app/components/CardDetails'
+import CardDetails from '../../components/CardDetails'
 import { mockCards } from '@/lib/mockCards'
 
 interface PageProps {

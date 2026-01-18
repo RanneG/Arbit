@@ -1,4 +1,4 @@
-import Collection from '@/app/components/Collection'
+import Collection from '../components/Collection'
 
 export default function CollectionPage() {
   return <Collection />

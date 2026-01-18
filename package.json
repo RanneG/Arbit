@@ -4,9 +4,11 @@
   "description": "Space-themed trading cards mobile app",
   "main": "index.js",
   "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",

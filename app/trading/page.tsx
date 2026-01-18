@@ -1,4 +1,4 @@
-import Trading from '@/app/components/Trading'
+import Trading from '../components/Trading'
 
 export default function TradingPage() {
   return <Trading />
