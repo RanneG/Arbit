@@ -21,6 +21,20 @@ export interface CardStats {
   marketIQ: number; // Understanding of market dynamics and trends (0-100)
 }
 
+export interface TradeData {
+  tradeId?: string;
+  pair: string;
+  direction: 'LONG' | 'SHORT';
+  entryPrice?: number;
+  exitPrice?: number;
+  roiPercent: number;
+  holdDays: number;
+  profit?: number;
+  notionalUSD?: number;
+  roi?: number;
+  stakeAmount?: number;
+}
+
 export interface Card {
   id: string;
   name: string;
@@ -36,6 +50,7 @@ export interface Card {
   marketValue?: number;
   tradingPair?: string;
   lastTradePrice?: number;
+  tradeData?: TradeData; // Optional trade performance data for cards minted from closed trades
 }
 
 export interface UserCollection {
