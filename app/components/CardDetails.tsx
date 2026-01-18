@@ -26,6 +26,7 @@ export default function CardDetails({ card }: CardDetailsProps) {
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
   const lastActivityRef = useRef<number>(Date.now())
   const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null)
+  const returnToCenterAnimationRef = useRef<number | null>(null)
 
   // Sync refs with state
   useEffect(() => {
@@ -54,14 +55,51 @@ export default function CardDetails({ card }: CardDetailsProps) {
     // Check inactivity periodically
     const interval = setInterval(checkInactivity, 1000) // Check every second
 
+    // Smooth return to center animation
+    const returnToCenter = () => {
+      const startX = positionRef.current.x
+      const startY = positionRef.current.y
+      const duration = 800 // ms
+      const startTime = Date.now()
+      
+      // Cancel any existing return animation
+      if (returnToCenterAnimationRef.current) {
+        cancelAnimationFrame(returnToCenterAnimationRef.current)
+      }
+      
+      const animateReturn = () => {
+        const elapsed = Date.now() - startTime
+        const progress = Math.min(elapsed / duration, 1)
+        
+        // Easing function for smooth, cheeky bounce-back (easeOutCubic with slight overshoot)
+        const easeOutCubic = 1 - Math.pow(1 - progress, 3)
+        
+        // Calculate new position (easing from start to center)
+        const newX = startX * (1 - easeOutCubic)
+        const newY = startY * (1 - easeOutCubic)
+        
+        setPosition({ x: newX, y: newY })
+        
+        if (progress < 1) {
+          returnToCenterAnimationRef.current = requestAnimationFrame(animateReturn)
+        } else {
+          // Ensure we're exactly at center
+          setPosition({ x: 0, y: 0 })
+          returnToCenterAnimationRef.current = null
+        }
+      }
+      
+      animateReturn()
+    }
+
     // Track activity events
     const handleActivity = () => {
       lastActivityRef.current = Date.now()
-      if (animationReady) {
-        // User became active - stop animation
+      if (animationReady && isAnimating) {
+        // User became active - stop animation and smoothly return to center
         setAnimationReady(false)
         setIsAnimating(false)
-        setPosition({ x: 0, y: 0 })
+        returnToCenter()
       }
     }
 
@@ -82,8 +120,11 @@ export default function CardDetails({ card }: CardDetailsProps) {
       if (inactivityTimerRef.current) {
         clearTimeout(inactivityTimerRef.current)
       }
+      if (returnToCenterAnimationRef.current) {
+        cancelAnimationFrame(returnToCenterAnimationRef.current)
+      }
     }
-  }, [animationReady])
+  }, [animationReady, isAnimating])
 
   // DVD logo bounce animation
   useEffect(() => {
